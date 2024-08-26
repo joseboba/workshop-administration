@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TipoServicioModule } from './api';
 import * as process from 'process';
 import { entities } from './config';
+import { ServicioModule } from './api/servicio/servicio.module';
 
 @Module({
   imports: [
@@ -18,8 +19,10 @@ import { entities } from './config';
       database: process.env.DB_DATABASE,
       schema: process.env.DB_SCHEMA,
       entities: entities,
+      logging: true,
     }),
     TipoServicioModule,
+    ServicioModule,
   ],
   controllers: [],
   providers: [],

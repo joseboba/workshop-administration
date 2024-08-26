@@ -1,10 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { UpdateTipoServicioDto } from '../dto';
+import { CreateTipoServicioDto, UpdateTipoServicioDto } from '../dto';
+import { Servicio } from '../../servicio/entities/servicio.entity';
 
 @Entity('taa_tipo_servicio')
 export class TipoServicio {
-
   @PrimaryGeneratedColumn({ type: 'int', name: 'tsr_codigo' })
   @ApiProperty()
   tsrCodigo: number;
@@ -30,10 +30,19 @@ export class TipoServicio {
   })
   @ApiProperty()
   tsrEstado: boolean;
+  @OneToMany(() => Servicio, (entity) => entity.tipoServicio)
+  @JoinColumn({ name: 'tsr_codigo' })
+  servicios: Servicio[];
 
   public static fromUpdateDto(updateDto: UpdateTipoServicioDto): TipoServicio {
     const tipoServicio = new TipoServicio();
     Object.assign(tipoServicio, updateDto);
+    return tipoServicio;
+  }
+
+  public static fromCreateDto(createDto: CreateTipoServicioDto): TipoServicio {
+    const tipoServicio = new TipoServicio();
+    Object.assign(tipoServicio, createDto);
     return tipoServicio;
   }
 }

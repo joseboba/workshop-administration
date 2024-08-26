@@ -1,6 +1,21 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { TipoServicioService } from './tipo_servicio.service';
-import { CreateTipoServicioDto, TipoServicioPaginationFiltersDto, UpdateTipoServicioDto } from './dto';
+import {
+  CreateTipoServicioDto,
+  TipoServicioPaginationFiltersDto,
+  UpdateTipoServicioDto,
+} from './dto';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TipoServicio } from './entities/tipo_servicio.entity';
 import { PaginationResponseDto } from '../../commons';
@@ -10,8 +25,7 @@ import { findAllSchema } from './swagger/swagger-schema';
 @ApiTags('Tipo Servicio')
 @ApiExtraModels(PaginationResponseDto, TipoServicio)
 export class TipoServicioController {
-  constructor(private readonly tipoServicioService: TipoServicioService) {
-  }
+  constructor(private readonly tipoServicioService: TipoServicioService) {}
 
   @Post()
   @ApiResponse({
@@ -38,17 +52,20 @@ export class TipoServicioController {
     status: HttpStatus.OK,
     type: TipoServicio,
   })
-  findOne(@Param('tsrCodigo') tsrCodigo: string) {
-    return this.tipoServicioService.findOne(+tsrCodigo);
+  findOne(@Param('tsrCodigo', ParseIntPipe) tsrCodigo: number) {
+    return this.tipoServicioService.findOne(tsrCodigo);
   }
 
   @Patch(':tsrCodigo')
-  update(@Param('tsrCodigo') tsrCodigo: string, @Body() updateTipoServicioDto: UpdateTipoServicioDto) {
+  update(
+    @Param('tsrCodigo', ParseIntPipe) tsrCodigo: number,
+    @Body() updateTipoServicioDto: UpdateTipoServicioDto,
+  ) {
     return this.tipoServicioService.update(+tsrCodigo, updateTipoServicioDto);
   }
 
   @Delete(':tsrCodigo')
-  remove(@Param('tsrCodigo') tsrCodigo: string) {
+  remove(@Param('tsrCodigo', ParseIntPipe) tsrCodigo: number) {
     return this.tipoServicioService.remove(+tsrCodigo);
   }
 }
