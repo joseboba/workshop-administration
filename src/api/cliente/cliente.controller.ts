@@ -21,7 +21,8 @@ import { ClientePaginationFiltersDto } from './dto/cliente-pagination-filters.dt
 @ApiTags('Cliente')
 @ApiExtraModels(PaginationResponseDto, Cliente)
 export class ClienteController {
-  constructor(private readonly clienteService: ClienteService) {}
+  constructor(private readonly clienteService: ClienteService) {
+  }
 
   @Post()
   @ApiResponse({

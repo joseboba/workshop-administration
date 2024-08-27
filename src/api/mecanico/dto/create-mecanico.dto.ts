@@ -13,11 +13,15 @@ export class CreateMecanicoDto {
   mecTelefono: string;
   @ApiProperty()
   mecCorreo: string;
-  @ApiProperty()
+  @ApiProperty({
+    example: '2024-08-27',
+  })
   mecFechaNacimiento: Date;
   @ApiProperty()
   mecSalario: number;
-  @ApiProperty()
+  @ApiProperty({
+    example: '2024-08-27',
+  })
   mecFechaContratacion: Date;
   @ApiProperty()
   mecAniosExperiencia: number;

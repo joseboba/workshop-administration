@@ -8,27 +8,33 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EspecialidadMecanica } from './entities/especialidad_mecanica.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { PaginationResponseDto } from '../../commons';
-import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
+import {
+  camelToSnakeCase,
+  convertToLikeParameter,
+  transformToAscOrDesc,
+} from '../../util';
 import { Servicio } from '../servicio/entities/servicio.entity';
 
 @Injectable()
 export class EspecialidadMecanicaService {
-
   constructor(
     @InjectRepository(EspecialidadMecanica)
     private readonly especialidadMecanicaRepository: Repository<EspecialidadMecanica>,
     private readonly dataSource: DataSource,
-  ) {
-  }
+  ) {}
 
-  async create(createEspecialidadMecanicaDto: CreateEspecialidadMecanicaDto): Promise<EspecialidadMecanica> {
+  async create(
+    createEspecialidadMecanicaDto: CreateEspecialidadMecanicaDto,
+  ): Promise<EspecialidadMecanica> {
     let queryRunner: QueryRunner;
     let response: EspecialidadMecanica;
     try {
       queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      const entity = EspecialidadMecanica.fromCreateDto(createEspecialidadMecanicaDto);
+      const entity = EspecialidadMecanica.fromCreateDto(
+        createEspecialidadMecanicaDto,
+      );
       response = await queryRunner.manager.save(entity);
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -42,13 +48,13 @@ export class EspecialidadMecanicaService {
   }
 
   async findAll(
-    especialidadMecanicaPaginationFilters: EspecialidadMecanicaPaginationFiltersDto
+    especialidadMecanicaPaginationFilters: EspecialidadMecanicaPaginationFiltersDto,
   ): Promise<PaginationResponseDto<EspecialidadMecanica>> {
     const {
       size = 10,
       page = 0,
       sort = 'emeCodigo,asc',
-      search = ''
+      search = '',
     } = especialidadMecanicaPaginationFilters;
 
     const skip = page * size;
@@ -56,20 +62,23 @@ export class EspecialidadMecanicaService {
 
     const parameters = {
       nombre: convertToLikeParameter(search),
-      descripcion: convertToLikeParameter(search)
+      descripcion: convertToLikeParameter(search),
     };
 
     const filters = `
-      (:nombre = '' or em.eme_nombre like :nombre) or
-      (:descripcion = '' or em.eme_descripcion like :descripcion)
+      (:nombre = '' or LOWER(em.eme_nombre) like :nombre) or
+      (:descripcion = '' or LOWER(em.eme_nombre) like :descripcion)
     `;
 
-    const queryBuilder = await this.especialidadMecanicaRepository
-      .createQueryBuilder('em');
+    const queryBuilder =
+      await this.especialidadMecanicaRepository.createQueryBuilder('em');
 
     const content = await queryBuilder
       .where(filters, parameters)
-      .orderBy(`em.${camelToSnakeCase(splitSortValues[0])}`, transformToAscOrDesc(splitSortValues[1]))
+      .orderBy(
+        `em.${camelToSnakeCase(splitSortValues[0])}`,
+        transformToAscOrDesc(splitSortValues[1]),
+      )
       .limit(size)
       .offset(skip)
       .getMany();
@@ -90,11 +99,12 @@ export class EspecialidadMecanicaService {
   }
 
   async findOne(emeCodigo: number) {
-    const especialidadMecanica = await this.especialidadMecanicaRepository.findOne({
-      where: {
-        emeCodigo,
-      },
-    });
+    const especialidadMecanica =
+      await this.especialidadMecanicaRepository.findOne({
+        where: {
+          emeCodigo,
+        },
+      });
 
     if (!especialidadMecanica) {
       throw new BadRequestException(
@@ -105,7 +115,10 @@ export class EspecialidadMecanicaService {
     return especialidadMecanica;
   }
 
-  async update(emeCodigo: number, updateEspecialidadMecanicaDto: UpdateEspecialidadMecanicaDto) {
+  async update(
+    emeCodigo: number,
+    updateEspecialidadMecanicaDto: UpdateEspecialidadMecanicaDto,
+  ) {
     let queryRunner: QueryRunner;
     try {
       queryRunner = await this.dataSource.createQueryRunner();
@@ -113,7 +126,9 @@ export class EspecialidadMecanicaService {
       await queryRunner.startTransaction();
       await this.findOne(emeCodigo);
       updateEspecialidadMecanicaDto.emeCodigo = emeCodigo;
-      const especialidadMecanica = EspecialidadMecanica.fromUpdateDto(updateEspecialidadMecanicaDto);
+      const especialidadMecanica = EspecialidadMecanica.fromUpdateDto(
+        updateEspecialidadMecanicaDto,
+      );
       await queryRunner.manager.save(especialidadMecanica);
       await queryRunner.commitTransaction();
     } catch (e) {

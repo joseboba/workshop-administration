@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { MecanicoService } from './mecanico.service';
-import { CreateMecanicoDto, UpdateMecanicoDto } from './dto';
+import { CreateMecanicoDto, MecanicoPaginationFiltersDto, UpdateMecanicoDto } from './dto';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaginationResponseDto } from '../../commons';
 import { Mecanico } from './entities/mecanico.entity';
@@ -27,8 +27,8 @@ export class MecanicoController {
     status: HttpStatus.OK,
     schema: findAllSchema,
   })
-  findAll() {
-    return this.mecanicoService.findAll();
+  findAll(@Query() mecanicoPaginationFilters: MecanicoPaginationFiltersDto) {
+    return this.mecanicoService.findAll(mecanicoPaginationFilters);
   }
 
   @Get(':mecCodigo')

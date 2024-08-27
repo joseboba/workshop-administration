@@ -66,13 +66,13 @@ export class ClienteService {
 
     const filters = `
       (
-        (:nombres = '' or c.cli_nombres like :nombres) OR
-        (:apellidos = '' or c.cli_apellidos like :apellidos) 
+        (:nombres = '' or LOWER(c.cli_nombres) like :nombres) OR
+        (:apellidos = '' or LOWER(c.cli_apellidos) like :apellidos) 
       ) AND
-      (:dpi = '' or c.cli_dpi like :dpi) AND
-      (:nit = '' or c.cli_nit like :nit) AND
-      (:telefono = '' or c.cli_telefono like :telefono) AND
-      (:correo = '' or c.cli_correo like :correo) 
+      (:dpi = '' or LOWER(c.cli_dpi) like :dpi) AND
+      (:nit = '' or LOWER(c.cli_nit) like :nit) AND
+      (:telefono = '' or LOWER(c.cli_telefono) like :telefono) AND
+      (:correo = '' or LOWER(c.cli_correo) like :correo) 
     `;
 
     const queryBuilder = await this.clienteRepository.createQueryBuilder('c');
