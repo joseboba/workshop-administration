@@ -6,12 +6,14 @@ export class ServicioPaginationFiltersDto extends PartialType(PaginationFiltersD
   @ApiProperty({
     type: String,
     required: false,
+    description: 'Busqueda por coincidencia de nombre o descripción',
   })
   search: string;
   @Type(() => Number)
   @ApiProperty({
     type: Number,
     required: false,
+    description: 'Código para filtrar por tipo de servicio',
   })
   tsrCodigo: number;
 }

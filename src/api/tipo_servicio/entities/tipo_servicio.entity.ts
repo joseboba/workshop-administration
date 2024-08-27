@@ -5,28 +5,22 @@ import { Servicio } from '../../servicio/entities/servicio.entity';
 
 @Entity('taa_tipo_servicio')
 export class TipoServicio {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'tsr_codigo' })
+  @PrimaryGeneratedColumn({ name: 'tsr_codigo' })
   @ApiProperty()
   tsrCodigo: number;
 
-  @Column({ name: 'tsr_nombre', type: 'varchar', length: 50, nullable: false })
+  @Column({ name: 'tsr_nombre' })
   @ApiProperty()
   tsrNombre: string;
 
   @Column({
     name: 'tsr_descripcion',
-    type: 'varchar',
-    length: 150,
-    nullable: false,
   })
   @ApiProperty()
   tsrDescripcion: string;
 
   @Column({
     name: 'tsr_estado',
-    type: 'boolean',
-    default: true,
-    nullable: false,
   })
   @ApiProperty()
   tsrEstado: boolean;

@@ -1,6 +1,21 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ServicioService } from './servicio.service';
-import { CreateServicioDto, ServicioPaginationFiltersDto, UpdateServicioDto } from './dto';
+import {
+  CreateServicioDto,
+  ServicioPaginationFiltersDto,
+  UpdateServicioDto,
+} from './dto';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaginationResponseDto } from '../../commons';
 import { Servicio } from './entities/servicio.entity';
@@ -40,7 +55,10 @@ export class ServicioController {
   }
 
   @Patch(':srvCodigo')
-  update(@Param('srvCodigo', ParseIntPipe) srvCodigo: number, @Body() updateServicioDto: UpdateServicioDto) {
+  update(
+    @Param('srvCodigo', ParseIntPipe) srvCodigo: number,
+    @Body() updateServicioDto: UpdateServicioDto,
+  ) {
     return this.servicioService.update(srvCodigo, updateServicioDto);
   }
 

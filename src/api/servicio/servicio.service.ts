@@ -126,7 +126,11 @@ export class ServicioService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
       updateServicioDto.srvCodigo = srvCodigo;
+      const tipoServicio = await this.tipoServicioService.findOne(
+        updateServicioDto.srvCodigo,
+      );
       const servicio = Servicio.fromUpdateDto(updateServicioDto);
+      servicio.tipoServicio = tipoServicio;
       await queryRunner.manager.save(servicio);
       await queryRunner.commitTransaction();
     } catch (e) {

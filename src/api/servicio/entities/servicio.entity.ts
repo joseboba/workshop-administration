@@ -7,56 +7,36 @@ import { CreateServicioDto, UpdateServicioDto } from '../dto';
 export class Servicio {
 
   @ApiProperty()
-  @PrimaryGeneratedColumn({ type: 'int', name: 'srv_codigo' })
+  @PrimaryGeneratedColumn({ name: 'srv_codigo' })
   srvCodigo: number;
   @ApiProperty()
   @Column({
     name: 'srv_nombre',
-    type: 'varchar',
-    length: 50,
-    nullable: false,
   })
   srvNombre: string;
   @ApiProperty()
   @Column({
     name: 'srv_descripcion',
-    type: 'varchar',
-    length: 150,
-    nullable: false,
   })
   srvDescripcion: string;
   @ApiProperty()
   @Column({
     name: 'srv_costo',
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: false,
   })
   srvCosto: number;
   @ApiProperty()
   @Column({
     name: 'srv_costo_repuestos',
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: false,
   })
   srvCostoRepuestos: number;
   @ApiProperty()
   @Column({
     name: 'srv_costo_productos',
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: false,
   })
   srvCostoProductos: number;
   @ApiProperty()
   @Column({
     name: 'srv_estado',
-    type: 'boolean',
-    nullable: false,
   })
   srvEstado: boolean;
   @ApiProperty({ type: () => TipoServicio })

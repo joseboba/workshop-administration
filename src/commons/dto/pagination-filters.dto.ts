@@ -6,6 +6,7 @@ export class PaginationFiltersDto {
   @ApiProperty({
     required: false,
     type: Number,
+    description: 'Tamaño de la página, valor por defecto es 10'
   })
   size?: number;
 
@@ -19,6 +20,7 @@ export class PaginationFiltersDto {
   @ApiProperty({
     required: false,
     type: String,
+    description: 'Parametro de ordenamiento proiedad,(asc|desc)',
   })
   sort?: string;
 }

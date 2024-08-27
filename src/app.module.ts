@@ -5,6 +5,8 @@ import { TipoServicioModule } from './api';
 import * as process from 'process';
 import { entities } from './config';
 import { ServicioModule } from './api/servicio/servicio.module';
+import { ClienteModule } from './api/cliente/cliente.module';
+import { MecanicoModule } from './api/mecanico/mecanico.module';
 
 @Module({
   imports: [
@@ -19,10 +21,11 @@ import { ServicioModule } from './api/servicio/servicio.module';
       database: process.env.DB_DATABASE,
       schema: process.env.DB_SCHEMA,
       entities: entities,
-      logging: true,
     }),
     TipoServicioModule,
     ServicioModule,
+    ClienteModule,
+    MecanicoModule,
   ],
   controllers: [],
   providers: [],
