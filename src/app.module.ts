@@ -7,6 +7,8 @@ import { entities } from './config';
 import { ServicioModule } from './api/servicio/servicio.module';
 import { ClienteModule } from './api/cliente/cliente.module';
 import { MecanicoModule } from './api/mecanico/mecanico.module';
+import { TaaEspecialidadMecanicaModule } from './api/taa_especialidad_mecanica/taa_especialidad_mecanica.module';
+import { EspecialidadMecanicaModule } from './api/especialidad_mecanica/especialidad_mecanica.module';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { MecanicoModule } from './api/mecanico/mecanico.module';
     ServicioModule,
     ClienteModule,
     MecanicoModule,
+    EspecialidadMecanicaModule,
   ],
   controllers: [],
   providers: [],

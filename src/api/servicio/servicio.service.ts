@@ -126,6 +126,7 @@ export class ServicioService {
       await queryRunner.connect();
       await queryRunner.startTransaction();
       updateServicioDto.srvCodigo = srvCodigo;
+      await this.findOne(srvCodigo);
       const tipoServicio = await this.tipoServicioService.findOne(
         updateServicioDto.srvCodigo,
       );
