@@ -5,8 +5,8 @@ import { UpdateMarcaEquipoDto } from './dto/update-marca_equipo.dto';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MarcaEquipo } from './entities/marca_equipo.entity';
 import { PaginationResponseDto } from '../../commons';
-import { findAllSchema } from '../cliente/swagger/swagger-schema';
 import { MarcaEquipoPaginationFiltersDto } from './dto/marca-equipo-pagination-filters.dto';
+import { findAllSchema } from './swagger/swagger-schema';
 
 @Controller('marca-equipo')
 @ApiTags('Marca Equipo')

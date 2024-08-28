@@ -25,11 +25,11 @@ export class Herramienta {
   @ApiProperty()
   @Column({ name: 'her_condicion' })
   herCondicion: number;
-  @ApiProperty()
+  @ApiProperty({ type: () => Mecanico })
   @JoinColumn({ name: 'mec_codigo' })
   @ManyToOne(() => Mecanico, (entity) => entity.herramientas)
   mecanico: Mecanico;
-  @ApiProperty()
+  @ApiProperty({ type: () => MarcaHerramienta })
   @JoinColumn({ name: 'mhe_codigo' })
   @ManyToOne(() => MarcaHerramienta, (entity) => entity.herramientas)
   marcaHerramienta: MarcaHerramienta;

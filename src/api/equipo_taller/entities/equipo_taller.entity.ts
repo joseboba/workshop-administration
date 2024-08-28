@@ -2,6 +2,8 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 't
 import { ApiProperty } from '@nestjs/swagger';
 import { Mecanico } from '../../mecanico/entities/mecanico.entity';
 import { MarcaEquipo } from '../../marca_equipo/entities/marca_equipo.entity';
+import { UpdateEquipoTallerDto } from '../dto/update-equipo_taller.dto';
+import { CreateEquipoTallerDto } from '../dto/create-equipo_taller.dto';
 
 @Entity('taa_equipo_taller')
 export class EquipoTaller {
@@ -33,4 +35,21 @@ export class EquipoTaller {
   @ManyToOne(() => MarcaEquipo, (entity) => entity.equiposTaller)
   marcaEquipo: MarcaEquipo;
 
+  public static fromUpdateDto(
+    updateDto: UpdateEquipoTallerDto,
+  ): EquipoTaller {
+    return this.parseDto(updateDto);
+  }
+
+  public static fromCreateDto(
+    createDto: CreateEquipoTallerDto,
+  ): EquipoTaller {
+    return this.parseDto(createDto);
+  }
+
+  private static parseDto(source): EquipoTaller {
+    const equipoTaller = new EquipoTaller();
+    Object.assign(equipoTaller, source);
+    return equipoTaller;
+  }
 }
