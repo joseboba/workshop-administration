@@ -7,10 +7,11 @@ import { ServicioRepuesto } from './entities/servicio_repuesto.entity';
 import { ServicioService } from '../servicio/servicio.service';
 import { RepuestoService } from '../repuesto/repuesto.service';
 import { ServicioRepuestoPaginationFiltersDto } from './dto/servicio-repuesto-pagination-filters.dto';
+import { PaginationResponseDto } from '../../commons';
+import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
 
 @Injectable()
 export class ServicioRepuestoService {
-
   constructor(
     @InjectRepository(ServicioRepuesto)
     private readonly servicioRepuestoRepository: Repository<ServicioRepuesto>,
@@ -20,7 +21,9 @@ export class ServicioRepuestoService {
   ) {
   }
 
-  async create(createServicioRepuestoDto: CreateServicioRepuestoDto): Promise<ServicioRepuesto> {
+  async create(
+    createServicioRepuestoDto: CreateServicioRepuestoDto,
+  ): Promise<ServicioRepuesto> {
     let queryRunner: QueryRunner;
     let response: ServicioRepuesto;
     try {
@@ -48,8 +51,57 @@ export class ServicioRepuestoService {
     return response;
   }
 
-  async findAll(servicioRepuestoPaginationFilter: ServicioRepuestoPaginationFiltersDto) {
-    return `This action returns all servicioRepuesto`;
+  async findAll(
+    servicioRepuestoPaginationFilter: ServicioRepuestoPaginationFiltersDto,
+  ): Promise<PaginationResponseDto<ServicioRepuesto>> {
+    const {
+      size = 10,
+      page = 0,
+      sort = 'srrCantidad,asc',
+      servicio = '',
+      repuesto = '',
+    } = servicioRepuestoPaginationFilter;
+
+    const splitSortValues = sort.split(',');
+    const skip = page * size;
+    const parameters = {
+      servicio: convertToLikeParameter(servicio),
+      repuesto: convertToLikeParameter(repuesto),
+    };
+
+    const filters = `
+      (:servicio = '' or lower(srv.srv_nombre) like :servicio) and
+      (:repuesto = '' or lower(rep.rep_nombre) like :repuesto)
+    `;
+
+    const queryBuilder = await this.servicioRepuestoRepository
+      .createQueryBuilder('srr')
+      .innerJoinAndSelect('srr.servicio', 'srv')
+      .innerJoinAndSelect('srr.repuesto', 'rep');
+
+    const content = await queryBuilder
+      .where(filters, parameters)
+      .orderBy(
+        `srr.${camelToSnakeCase(splitSortValues[0])}`,
+        transformToAscOrDesc(splitSortValues[1]),
+      )
+      .limit(size)
+      .offset(skip)
+      .getMany();
+
+    const totalElements = await queryBuilder
+      .select('count(*)')
+      .where(filters, parameters)
+      .getCount();
+
+    const totalPages = Math.ceil(totalElements / size);
+    const response = new PaginationResponseDto<ServicioRepuesto>();
+    response.content = content;
+    response.totalElements = totalElements;
+    response.totalPages = totalPages;
+    response.firstPage = page === 0;
+    response.lastPage = page === totalPages - 1;
+    return response;
   }
 
   async findOne(srrCodigo: number) {
@@ -66,20 +118,26 @@ export class ServicioRepuestoService {
     return servicioRepuesto;
   }
 
-  async update(srrCodigo: number, updateServicioRepuestoDto: UpdateServicioRepuestoDto) {
+  async update(
+    srrCodigo: number,
+    updateServicioRepuestoDto: UpdateServicioRepuestoDto,
+  ) {
     let queryRunner: QueryRunner;
     try {
       queryRunner = await this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
       await this.findOne(srrCodigo);
+      updateServicioRepuestoDto.srrCodigo = srrCodigo;
       const servicio = await this.servicioService.findOne(
         updateServicioRepuestoDto.srvCodigo,
       );
       const repuesto = await this.repuestoService.findOne(
         updateServicioRepuestoDto.repCodigo,
       );
-      const servicioRepuesto = ServicioRepuesto.fromUpdateDto(updateServicioRepuestoDto);
+      const servicioRepuesto = ServicioRepuesto.fromUpdateDto(
+        updateServicioRepuestoDto,
+      );
       servicioRepuesto.servicio = servicio;
       servicioRepuesto.repuesto = repuesto;
       await queryRunner.manager.save(servicioRepuesto);

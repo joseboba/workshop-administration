@@ -21,6 +21,7 @@ import { Herramienta } from '../api/herramienta/entities/herramienta.entity';
 import { EquipoTaller } from '../api/equipo_taller/entities/equipo_taller.entity';
 import { Producto } from '../api/producto/entities/producto.entity';
 import { Cotizacion } from '../api/cootizacion/entities/cotizacion.entity';
+import { ServicioRepuesto } from '../api/servicio_repuesto/entities/servicio_repuesto.entity';
 
 export const entities = [
   TipoServicio,
@@ -46,4 +47,5 @@ export const entities = [
   EquipoTaller,
   Producto,
   Cotizacion,
+  ServicioRepuesto,
 ];
