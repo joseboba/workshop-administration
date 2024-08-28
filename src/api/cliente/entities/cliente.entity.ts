@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 't
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateClienteDto, UpdateClienteDto } from '../dto';
 import { Vehiculo } from '../../vehiculo/entities/vehiculo.entity';
+import { Cotizacion } from '../../cootizacion/entities/cotizacion.entity';
 
 @Entity('taa_cliente')
 export class Cliente {
@@ -29,6 +30,8 @@ export class Cliente {
   @JoinColumn({ name: 'cli_codigo' })
   @OneToMany(() => Vehiculo, (entity) => entity.cliente)
   vehiculos: Vehiculo[];
+  @JoinColumn({ name: 'cli_codigo' })
+  cootizaciones: Cotizacion[];
 
   public static fromUpdateDto(updateDto: UpdateClienteDto): Cliente {
     const cliente = new Cliente();

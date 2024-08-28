@@ -1,0 +1,62 @@
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { CotizacionService } from './cotizacion.service';
+import { CreateCotizacionDto } from './dto/create-cotizacion.dto';
+import { UpdateCotizacionDto } from './dto/update-cotizacion.dto';
+import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Cotizacion } from './entities/cotizacion.entity';
+import { findAllSchema } from '../cita/swagger/swagger-schema';
+import { CotizacionPaginationFiltersDto } from './dto/cotizacion-pagination-filters.dto';
+import { PaginationResponseDto } from '../../commons';
+
+@Controller('cotizacion')
+@ApiTags('Cotizacion')
+@ApiExtraModels(PaginationResponseDto, Cotizacion)
+export class CotizacionController {
+  constructor(private readonly cotizacionService: CotizacionService) {
+  }
+
+  @Post()
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    type: Cotizacion,
+  })
+  create(@Body() createCotizacionDto: CreateCotizacionDto) {
+    return this.cotizacionService.create(createCotizacionDto);
+  }
+
+  @Get()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    schema: findAllSchema,
+  })
+  findAll(
+    @Query() cotizacionPaginationFilters: CotizacionPaginationFiltersDto,
+  ) {
+    return this.cotizacionService.findAll(cotizacionPaginationFilters);
+  }
+
+  @Get(':cotCodigo')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Cotizacion,
+  })
+  findOne(@Param('cotCodigo') cotCodigo: number) {
+    return this.cotizacionService.findOne(cotCodigo);
+  }
+
+  @Patch(':cotCodigo')
+  @ApiResponse({
+    status: HttpStatus.OK,
+  })
+  update(@Param('cotCodigo') cotCodigo: number, @Body() updateCotizacionDto: UpdateCotizacionDto) {
+    return this.cotizacionService.update(cotCodigo, updateCotizacionDto);
+  }
+
+  @Delete(':cotCodigo')
+  @ApiResponse({
+    status: HttpStatus.OK,
+  })
+  remove(@Param('cotCodigo') cotCodigo: number) {
+    return this.cotizacionService.remove(cotCodigo);
+  }
+}

@@ -20,7 +20,7 @@ import { Cita } from '../api/cita/entities/cita.entity';
 import { Herramienta } from '../api/herramienta/entities/herramienta.entity';
 import { EquipoTaller } from '../api/equipo_taller/entities/equipo_taller.entity';
 import { Producto } from '../api/producto/entities/producto.entity';
-import { Cootizacion } from '../api/cootizacion/entities/cootizacion.entity';
+import { Cotizacion } from '../api/cootizacion/entities/cotizacion.entity';
 
 export const entities = [
   TipoServicio,
@@ -45,5 +45,5 @@ export const entities = [
   Herramienta,
   EquipoTaller,
   Producto,
-  Cootizacion,
+  Cotizacion,
 ];
