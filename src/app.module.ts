@@ -27,6 +27,8 @@ import { HerramientaModule } from './api/herramienta/herramienta.module';
 import { EquipoTallerModule } from './api/equipo_taller/equipo_taller.module';
 import { ProductoModule } from './api/producto/producto.module';
 import { CotizacionModule } from './api/cootizacion/cotizacion.module';
+import { ServicioProductoModule } from './api/servicio_producto/servicio_producto.module';
+import { ServicioRepuestoModule } from './api/servicio_repuesto/servicio_repuesto.module';
 
 @Module({
   imports: [
@@ -65,6 +67,8 @@ import { CotizacionModule } from './api/cootizacion/cotizacion.module';
     EquipoTallerModule,
     ProductoModule,
     CotizacionModule,
+    ServicioProductoModule,
+    ServicioRepuestoModule,
   ],
   controllers: [],
   providers: [

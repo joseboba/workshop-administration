@@ -14,6 +14,7 @@ import { ProveedorModule } from '../proveedor/proveedor.module';
     TipoRepuestoModule,
     ProveedorModule,
   ],
+  exports: [RepuestoService]
 })
 export class RepuestoModule {
 }

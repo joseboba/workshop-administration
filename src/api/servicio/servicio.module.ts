@@ -13,6 +13,7 @@ import { TipoServicioModule } from '../tipo_servicio/tipo_servicio.module';
     TypeOrmModule.forFeature([Servicio, TipoServicio]),
     TipoServicioModule,
   ],
+  exports: [ServicioService]
 })
 export class ServicioModule {
 }

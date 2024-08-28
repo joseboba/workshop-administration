@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 't
 import { TipoServicio } from '../../tipo_servicio/entities/tipo_servicio.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateServicioDto, UpdateServicioDto } from '../dto';
+import { ServicioRepuesto } from '../../servicio_repuesto/entities/servicio_repuesto.entity';
 
 @Entity('taa_servicio')
 export class Servicio {
@@ -43,6 +44,8 @@ export class Servicio {
   @ManyToOne(() => TipoServicio, (entity) => entity.servicios)
   @JoinColumn({ name: 'tsr_codigo' })
   tipoServicio: TipoServicio;
+  @JoinColumn({ name: 'srv_codigo' })
+  serviciosRepuesto: ServicioRepuesto[];
 
   public static fromUpdateDto(updateDto: UpdateServicioDto): Servicio {
     const servicio = new Servicio();

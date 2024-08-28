@@ -3,6 +3,7 @@ import { Proveedor } from '../../proveedor/entities/proveedor.entity';
 import { TipoRepuesto } from '../../tipo_repuesto/entities/tipo_repuesto.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateRepuestoDto, UpdateRepuestoDto } from '../dto';
+import { ServicioRepuesto } from '../../servicio_repuesto/entities/servicio_repuesto.entity';
 
 @Entity('taa_repuesto')
 export class Repuesto {
@@ -32,6 +33,8 @@ export class Repuesto {
   @ManyToOne(() => TipoRepuesto, (entity) => entity.repuestos)
   @JoinColumn({ name: 'trp_codigo' })
   tipoRepuesto: TipoRepuesto;
+  @JoinColumn({ name: 'rep_codigo' })
+  serviciosRepuesto: ServicioRepuesto[];
 
   public static fromUpdateDto(updateDto: UpdateRepuestoDto): Repuesto {
     const repuesto = new Repuesto();
