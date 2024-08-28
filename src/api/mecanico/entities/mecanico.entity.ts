@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { EspecialidadMecanica } from '../../especialidad_mecanica/entities/especialidad_mecanica.entity';
 import { CreateEspecialidadMecanicaDto, UpdateEspecialidadMecanicaDto } from '../../especialidad_mecanica/dto';
 import { CreateMecanicoDto, UpdateMecanicoDto } from '../dto';
 import { Herramienta } from '../../herramienta/entities/herramienta.entity';
+import { EquipoTaller } from '../../equipo_taller/entities/equipo_taller.entity';
 
 @Entity('taa_mecanico')
 export class Mecanico {
@@ -45,7 +46,11 @@ export class Mecanico {
   @JoinColumn({ name: 'eme_codigo' })
   especialidadMecanica: EspecialidadMecanica;
   @JoinColumn({ name: 'mec_codigo' })
+  @OneToMany(() => Herramienta, (entity) => entity.mecanico)
   herramientas: Herramienta[];
+  @JoinColumn({ name: 'mec_codigo' })
+  @OneToMany(() => EquipoTaller, (entity) => entity.marcaEquipo)
+  equiposTaller: EquipoTaller[];
 
   public static fromUpdateDto(updateDto: UpdateMecanicoDto): Mecanico {
     const mecanico = new Mecanico();

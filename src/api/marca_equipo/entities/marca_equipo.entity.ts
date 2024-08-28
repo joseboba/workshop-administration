@@ -1,7 +1,8 @@
 import { CreateMarcaEquipoDto } from '../dto/create-marca_equipo.dto';
 import { UpdateMarcaEquipoDto } from '../dto/update-marca_equipo.dto';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { EquipoTaller } from '../../equipo_taller/entities/equipo_taller.entity';
 
 @Entity('taa_marca_equipo')
 export class MarcaEquipo {
@@ -14,6 +15,9 @@ export class MarcaEquipo {
   @ApiProperty()
   @Column({ name: 'meq_descripcion' })
   meqDescripcion: string;
+  @JoinColumn({ name: 'meq_codigo' })
+  @OneToMany(() => EquipoTaller, (entity) => entity.marcaEquipo)
+  equiposTaller: EquipoTaller[];
 
   public static fromUpdateDto(updateDto: UpdateMarcaEquipoDto): MarcaEquipo {
     return this.parseDto(updateDto);

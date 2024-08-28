@@ -1,7 +1,7 @@
 import { UpdateMarcaHerramientaDto } from '../dto/update-marca_herramienta.dto';
 import { CreateMarcaHerramientaDto } from '../dto/create-marca_herramienta.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Herramienta } from '../../herramienta/entities/herramienta.entity';
 
 @Entity('taa_marca_herramienta')
@@ -13,6 +13,7 @@ export class MarcaHerramienta {
   @Column({ name: 'mhe_nombre' })
   mheNombre: string;
   @JoinColumn({ name: 'mhe_codigo' })
+  @OneToMany(() => Herramienta, (entity) => entity.marcaHerramienta)
   herramientas: Herramienta[];
 
   public static fromUpdateDto(
