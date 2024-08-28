@@ -113,6 +113,7 @@ export class ProveedorService {
       queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
+      await this.findOne(prvCodigo);
       updateProveedorDto.prvCodigo = prvCodigo;
       const entity = Proveedor.fromUpdateDto(updateProveedorDto);
       response = await queryRunner.manager.save(entity);

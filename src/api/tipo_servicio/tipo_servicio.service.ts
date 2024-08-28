@@ -115,6 +115,7 @@ export class TipoServicioService {
       queryRunner = await this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
+      await this.findOne(tsrCodigo);
       updateTipoServicioDto.tsrCodigo = tsrCodigo;
       const tipoServicio = TipoServicio.fromUpdateDto(updateTipoServicioDto);
       await queryRunner.manager.save(tipoServicio);

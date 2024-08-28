@@ -115,6 +115,7 @@ export class NivelGravedadService {
       queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
+      await this.findOne(ngrCodigo);
       updateNivelGravedadDto.ngrCodigo = ngrCodigo;
       const entity = NivelGravedad.fromUpdateDto(updateNivelGravedadDto);
       response = await queryRunner.manager.save(entity);

@@ -8,6 +8,8 @@ import { Proveedor } from '../api/proveedor/entities/proveedor.entity';
 import { Repuesto } from '../api/repuesto/entities/repuesto.entity';
 import { NivelGravedad } from '../api/nivel_gravedad/entities/nivel_gravedad.entity';
 import { TipoPago } from '../api/tipo_pago/entities/tipo_pago.entity';
+import { TipoVehiculo } from '../api/tipo_vehiculo/entities/tipo_vehiculo.entity';
+import { MarcaVehiculo } from '../api/marca_vehiculo/entities/marca_vehiculo.entity';
 
 export const entities = [
   TipoServicio,
@@ -20,4 +22,6 @@ export const entities = [
   Repuesto,
   NivelGravedad,
   TipoPago,
+  TipoVehiculo,
+  MarcaVehiculo,
 ];

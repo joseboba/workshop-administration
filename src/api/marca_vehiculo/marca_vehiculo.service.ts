@@ -1,29 +1,36 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateTipoPagoDto, TipoPagoPaginationFiltersDto, UpdateTipoPagoDto } from './dto';
+import { CreateMarcaVehiculoDto, UpdateMarcaVehiculoDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TipoPago } from './entities/tipo_pago.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
+import { MarcaVehiculo } from './entities/marca_vehiculo.entity';
 import { PaginationResponseDto } from '../../commons';
+import { MarcaVehiculoPaginationFiltersDto } from './dto/marca-vehiculo-pagination-filters.dto';
+import {
+  camelToSnakeCase,
+  convertToLikeParameter,
+  transformToAscOrDesc,
+} from '../../util';
+import { TipoVehiculo } from '../tipo_vehiculo/entities/tipo_vehiculo.entity';
 
 @Injectable()
-export class TipoPagoService {
+export class MarcaVehiculoService {
   constructor(
-    @InjectRepository(TipoPago)
-    private readonly tipoPagoRepository: Repository<TipoPago>,
+    @InjectRepository(MarcaVehiculo)
+    private readonly marcaVehiculoRepository: Repository<MarcaVehiculo>,
     private readonly dataSource: DataSource,
-  ) {
-  }
+  ) {}
 
-  async create(createTipoPagoDto: CreateTipoPagoDto): Promise<TipoPago> {
+  async create(
+    createMarcaVehiculoDto: CreateMarcaVehiculoDto,
+  ): Promise<MarcaVehiculo> {
     let queryRunner: QueryRunner;
-    let response: TipoPago;
+    let response: MarcaVehiculo;
     try {
       queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
       response = await queryRunner.manager.save(
-        TipoPago.fromCreateDto(createTipoPagoDto),
+        MarcaVehiculo.fromCreateDto(createMarcaVehiculoDto),
       );
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -37,14 +44,14 @@ export class TipoPagoService {
   }
 
   async findAll(
-    tipoPagoPaginationFiltersDto: TipoPagoPaginationFiltersDto,
-  ): Promise<PaginationResponseDto<TipoPago>> {
+    marcaVehiculoPaginationFilters: MarcaVehiculoPaginationFiltersDto,
+  ): Promise<PaginationResponseDto<MarcaVehiculo>> {
     const {
       size = 10,
       page = 0,
-      sort = 'tpaNombre,asc',
+      sort = 'mveNombre,asc',
       search = '',
-    } = tipoPagoPaginationFiltersDto;
+    } = marcaVehiculoPaginationFilters;
 
     const splitSortValues = sort.split(',');
     const skip = page * size;
@@ -53,16 +60,16 @@ export class TipoPagoService {
     };
 
     const filters = `
-      (:nombre = '' or tp.tpa_nombre like :nombre)
+      (:nombre = '' or mv.mve_nombre like :nombre)
     `;
 
     const queryBuilder =
-      await this.tipoPagoRepository.createQueryBuilder('tp');
+      await this.marcaVehiculoRepository.createQueryBuilder('mv');
 
     const content = await queryBuilder
       .where(filters, parameters)
       .orderBy(
-        `tp.${camelToSnakeCase(splitSortValues[0])}`,
+        `mv.${camelToSnakeCase(splitSortValues[0])}`,
         transformToAscOrDesc(splitSortValues[1]),
       )
       .limit(size)
@@ -75,7 +82,7 @@ export class TipoPagoService {
       .getCount();
 
     const totalPages = Math.ceil(totalElements / size);
-    const response = new PaginationResponseDto<TipoPago>();
+    const response = new PaginationResponseDto<MarcaVehiculo>();
     response.content = content;
     response.totalElements = totalElements;
     response.totalPages = totalPages;
@@ -84,26 +91,31 @@ export class TipoPagoService {
     return response;
   }
 
-  async findOne(tpaCodigo: string): Promise<TipoPago> {
-    const tipoPago = await this.tipoPagoRepository.findOneBy({ tpaCodigo });
-    if (!tipoPago) {
+  async findOne(mveCodigo: number): Promise<MarcaVehiculo> {
+    const marcaVehiculo = await this.marcaVehiculoRepository.findOneBy({
+      mveCodigo,
+    });
+    if (!marcaVehiculo) {
       throw new BadRequestException(
-        `No existe tipo pago con el cóigo ${tpaCodigo}`,
+        `No existe tipo de vehiculo con el cóigo ${mveCodigo}`,
       );
     }
 
-    return tipoPago;
+    return marcaVehiculo;
   }
 
-  async update(tpaCodigo: string, updateTipoPagoDto: UpdateTipoPagoDto) {
+  async update(
+    mveCodigo: number,
+    updateMarcaVehiculoDto: UpdateMarcaVehiculoDto,
+  ) {
     let queryRunner: QueryRunner;
     try {
       queryRunner = await this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      await this.findOne(tpaCodigo);
-      updateTipoPagoDto.tpaCodigo = tpaCodigo;
-      const tipoServicio = TipoPago.fromUpdateDto(updateTipoPagoDto);
+      await this.findOne(mveCodigo);
+      updateMarcaVehiculoDto.mveCodigo = mveCodigo;
+      const tipoServicio = MarcaVehiculo.fromUpdateDto(updateMarcaVehiculoDto);
       await queryRunner.manager.save(tipoServicio);
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -114,8 +126,8 @@ export class TipoPagoService {
     }
   }
 
-  async remove(tpaCodigo: string) {
-    const tipoPago = await this.findOne(tpaCodigo);
-    await this.tipoPagoRepository.remove(tipoPago);
+  async remove(mveCodigo: number) {
+    const marcaVehiculo = await this.findOne(mveCodigo);
+    await this.marcaVehiculoRepository.remove(marcaVehiculo);
   }
 }

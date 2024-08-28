@@ -133,6 +133,7 @@ export class MecanicoService {
       queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
+      await this.findOne(mecCodigo);
       updateMecanicoDto.mecCodigo = mecCodigo;
       await this.findOne(mecCodigo);
       const especialidadMecanica =

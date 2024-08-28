@@ -14,6 +14,8 @@ import { RepuestoModule } from './api/repuesto/repuesto.module';
 import { TipoPagoModule } from './api/tipo_pago/tipo_pago.module';
 import { NivelGravedadModule } from './api/nivel_gravedad/nivel_gravedad.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MarcaVehiculoModule } from './api/marca_vehiculo/marca_vehiculo.module';
+import { TipoVehiculoModule } from './api/tipo_vehiculo/tipo_vehiculo.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     RepuestoModule,
     TipoPagoModule,
     NivelGravedadModule,
+    MarcaVehiculoModule,
+    TipoVehiculoModule,
   ],
   controllers: [],
   providers: [
