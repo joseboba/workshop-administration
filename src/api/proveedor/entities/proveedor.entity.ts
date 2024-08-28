@@ -8,6 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateProveedorDto, UpdateProveedorDto } from '../dto';
 import { Repuesto } from '../../repuesto/entities/repuesto.entity';
+import { Producto } from '../../producto/entities/producto.entity';
 
 @Entity('taa_proveedor')
 export class Proveedor {
@@ -32,6 +33,8 @@ export class Proveedor {
   @OneToMany(() => Repuesto, (entity) => entity.proveedor)
   @JoinColumn({ name: 'prv_codigo' })
   repuestos: Repuesto[];
+  @JoinColumn({ name: 'prv_codigo' })
+  productos: Producto[];
 
   public static fromUpdateDto(updateDto: UpdateProveedorDto): Proveedor {
     const proveedor = new Proveedor();

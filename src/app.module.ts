@@ -25,6 +25,8 @@ import { VehiculoModule } from './api/vehiculo/vehiculo.module';
 import { CitaModule } from './api/cita/cita.module';
 import { HerramientaModule } from './api/herramienta/herramienta.module';
 import { EquipoTallerModule } from './api/equipo_taller/equipo_taller.module';
+import { ProductoModule } from './api/producto/producto.module';
+import { CootizacionModule } from './api/cootizacion/cootizacion.module';
 
 @Module({
   imports: [
@@ -61,6 +63,8 @@ import { EquipoTallerModule } from './api/equipo_taller/equipo_taller.module';
     CitaModule,
     HerramientaModule,
     EquipoTallerModule,
+    ProductoModule,
+    CootizacionModule,
   ],
   controllers: [],
   providers: [

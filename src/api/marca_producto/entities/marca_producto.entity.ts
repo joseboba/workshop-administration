@@ -1,7 +1,8 @@
 import { UpdateMarcaProductoDto } from '../dto/update-marca_producto.dto';
 import { CreateMarcaProductoDto } from '../dto/create-marca_producto.dto';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Producto } from '../../producto/entities/producto.entity';
 
 @Entity('taa_marca_producto')
 export class MarcaProducto {
@@ -12,6 +13,8 @@ export class MarcaProducto {
   @ApiProperty()
   @Column({ name: 'map_nombre' })
   mapNombre: string;
+  @JoinColumn({ name: 'map_codigo' })
+  productos: Producto[];
 
   public static fromUpdateDto(
     updateDto: UpdateMarcaProductoDto,
