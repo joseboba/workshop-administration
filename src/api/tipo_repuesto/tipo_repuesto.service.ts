@@ -101,7 +101,7 @@ export class TipoRepuestoService {
 
     if (!tipoRepuesto) {
       throw new BadRequestException(
-        `No existe tipo de repuesto con el cóigo ${trpCodigo}`,
+        `No existe tipo de repuesto con el código ${trpCodigo}`,
       );
     }
 

@@ -109,7 +109,7 @@ export class ClienteService {
 
     if (!cliente) {
       throw new BadRequestException(
-        `No existe cliente con el cóigo ${cliCodigo}`,
+        `No existe cliente con el código ${cliCodigo}`,
       );
     }
 

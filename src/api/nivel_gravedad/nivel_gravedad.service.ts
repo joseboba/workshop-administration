@@ -98,7 +98,7 @@ export class NivelGravedadService {
 
     if (!nivelGravedad) {
       throw new BadRequestException(
-        `No existe nivel de gravedad con el cóigo ${ngrCodigo}`,
+        `No existe nivel de gravedad con el código ${ngrCodigo}`,
       );
     }
 

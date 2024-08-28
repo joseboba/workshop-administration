@@ -64,8 +64,8 @@ export class TipoServicioService {
     };
 
     const where = `
-      (:nombre = '' or ts.tsr_nombre like :nombre) or
-      (:descripcion = '' or ts.tsr_descripcion like :descripcion)
+      (:nombre = '' or lower(ts.tsr_nombre) like :nombre) or
+      (:descripcion = '' or lower(ts.tsr_descripcion) like :descripcion)
     `;
 
     const content = await queryBuilder

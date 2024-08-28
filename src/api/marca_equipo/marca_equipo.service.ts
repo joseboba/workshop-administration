@@ -58,8 +58,8 @@ export class MarcaEquipoService {
     };
 
     const filters = `
-      (:nombre = '' or mq.meq_nombre like :nombre) or
-      (:descripcion = '' or mq.meq_descripcion like :descripcion)
+      (:nombre = '' or LOWER(mq.meq_nombre) like :nombre) or
+      (:descripcion = '' or LOWER(mq.meq_descripcion) like :descripcion)
     `;
 
     const queryBuilder =
@@ -96,7 +96,7 @@ export class MarcaEquipoService {
     });
     if (!marcaEquipo) {
       throw new BadRequestException(
-        `No existe tipo de vehiculo con el cóigo ${meqCodigo}`,
+        `No existe tipo de vehiculo con el código ${meqCodigo}`,
       );
     }
 
@@ -111,8 +111,8 @@ export class MarcaEquipoService {
       await queryRunner.startTransaction();
       await this.findOne(meqCodigo);
       updateMarcaEquipoDto.meqCodigo = meqCodigo;
-      const tipoServicio = MarcaEquipo.fromUpdateDto(updateMarcaEquipoDto);
-      await queryRunner.manager.save(tipoServicio);
+      const marcaEquipo = MarcaEquipo.fromUpdateDto(updateMarcaEquipoDto);
+      await queryRunner.manager.save(marcaEquipo);
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner!.rollbackTransaction();

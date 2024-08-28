@@ -77,13 +77,13 @@ export class MecanicoService {
 
     const filters = `
       (
-        (:nombres = '' or m.cli_nombres like :nombres) OR
-        (:apellidos = '' or m.cli_apellidos like :apellidos) 
+        (:nombres = '' or lower(m.cli_nombres) like :nombres) OR
+        (:apellidos = '' or lower(m.cli_apellidos) like :apellidos) 
       ) AND
-      (:dpi = '' or m.cli_dpi like :dpi) AND
-      (:nit = '' or m.cli_nit like :nit) AND
-      (:telefono = '' or m.cli_telefono like :telefono) AND
-      (:correo = '' or m.cli_correo like :correo) 
+      (:dpi = '' or lower(m.cli_dpi) like :dpi) AND
+      (:nit = '' or lower(m.cli_nit) like :nit) AND
+      (:telefono = '' or lower(m.cli_telefono) like :telefono) AND
+      (:correo = '' or lower(m.cli_correo) like :correo) 
     `;
 
     const queryBuilder = await this.mecanicoRepository.createQueryBuilder('m');

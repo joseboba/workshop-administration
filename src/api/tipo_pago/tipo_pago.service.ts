@@ -53,7 +53,7 @@ export class TipoPagoService {
     };
 
     const filters = `
-      (:nombre = '' or tp.tpa_nombre like :nombre)
+      (:nombre = '' or lower(tp.tpa_nombre) like :nombre)
     `;
 
     const queryBuilder =
@@ -88,7 +88,7 @@ export class TipoPagoService {
     const tipoPago = await this.tipoPagoRepository.findOneBy({ tpaCodigo });
     if (!tipoPago) {
       throw new BadRequestException(
-        `No existe tipo pago con el cóigo ${tpaCodigo}`,
+        `No existe tipo pago con el código ${tpaCodigo}`,
       );
     }
 
@@ -103,8 +103,8 @@ export class TipoPagoService {
       await queryRunner.startTransaction();
       await this.findOne(tpaCodigo);
       updateTipoPagoDto.tpaCodigo = tpaCodigo;
-      const tipoServicio = TipoPago.fromUpdateDto(updateTipoPagoDto);
-      await queryRunner.manager.save(tipoServicio);
+      const tipoPago = TipoPago.fromUpdateDto(updateTipoPagoDto);
+      await queryRunner.manager.save(tipoPago);
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner!.rollbackTransaction();

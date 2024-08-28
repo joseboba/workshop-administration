@@ -14,6 +14,7 @@ import { MarcaEquipo } from '../api/marca_equipo/entities/marca_equipo.entity';
 import { MarcaHerramienta } from '../api/marca_herramienta/entities/marca_herramienta.entity';
 import { MarcaProducto } from '../api/marca_producto/entities/marca_producto.entity';
 import { Taller } from '../api/taller/entities/taller.entity';
+import { DiasNoDisponible } from '../api/dias_no_disponibles/entities/dias_no_disponible.entity';
 
 export const entities = [
   TipoServicio,
@@ -32,4 +33,5 @@ export const entities = [
   MarcaHerramienta,
   MarcaProducto,
   Taller,
+  DiasNoDisponible
 ];

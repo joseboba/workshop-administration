@@ -60,7 +60,7 @@ export class MarcaVehiculoService {
     };
 
     const filters = `
-      (:nombre = '' or mv.mve_nombre like :nombre)
+      (:nombre = '' or LOWER(mv.mve_nombre) like :nombre)
     `;
 
     const queryBuilder =
@@ -97,7 +97,7 @@ export class MarcaVehiculoService {
     });
     if (!marcaVehiculo) {
       throw new BadRequestException(
-        `No existe marca vehiculo con el cóigo ${mveCodigo}`,
+        `No existe marca vehiculo con el código ${mveCodigo}`,
       );
     }
 
@@ -115,8 +115,8 @@ export class MarcaVehiculoService {
       await queryRunner.startTransaction();
       await this.findOne(mveCodigo);
       updateMarcaVehiculoDto.mveCodigo = mveCodigo;
-      const tipoServicio = MarcaVehiculo.fromUpdateDto(updateMarcaVehiculoDto);
-      await queryRunner.manager.save(tipoServicio);
+      const marcaVehiculo = MarcaVehiculo.fromUpdateDto(updateMarcaVehiculoDto);
+      await queryRunner.manager.save(marcaVehiculo);
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner!.rollbackTransaction();

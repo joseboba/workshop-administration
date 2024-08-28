@@ -7,6 +7,6 @@ import { MarcaProducto } from './entities/marca_producto.entity';
 @Module({
   controllers: [MarcaProductoController],
   providers: [MarcaProductoService],
-  // imports: [TypeOrmModule.forFeature([MarcaProducto])],
+  imports: [TypeOrmModule.forFeature([MarcaProducto])],
 })
 export class MarcaProductoModule {}

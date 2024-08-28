@@ -56,8 +56,8 @@ export class TipoVehiculoService {
     };
 
     const filters = `
-      (:nombre = '' or tve.tve_nombre like :nombre) or
-      (:descripcion = '' or tve.tve_descripcion like :descripcion)
+      (:nombre = '' or lower(tve.tve_nombre) like :nombre) or
+      (:descripcion = '' or lower(tve.tve_descripcion) like :descripcion)
     `;
 
     const queryBuilder =
@@ -94,7 +94,7 @@ export class TipoVehiculoService {
     });
     if (!tipoVehiculo) {
       throw new BadRequestException(
-        `No existe tipo de vehiculo con el cóigo ${tveCodigo}`,
+        `No existe tipo de vehiculo con el código ${tveCodigo}`,
       );
     }
 
@@ -112,8 +112,8 @@ export class TipoVehiculoService {
       await queryRunner.startTransaction();
       await this.findOne(tveCodigo);
       updateTipoVehiculoDto.tveCodigo = tveCodigo;
-      const tipoServicio = TipoVehiculo.fromUpdateDto(updateTipoVehiculoDto);
-      await queryRunner.manager.save(tipoServicio);
+      const tipoVehiculo = TipoVehiculo.fromUpdateDto(updateTipoVehiculoDto);
+      await queryRunner.manager.save(tipoVehiculo);
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner!.rollbackTransaction();

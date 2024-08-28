@@ -57,7 +57,7 @@ export class MarcaHerramientaService {
     };
 
     const filters = `
-      (:nombre = '' or mh.mhe_nombre like :nombre)
+      (:nombre = '' or LOWER(mh.mhe_nombre) like :nombre)
     `;
 
     const queryBuilder =
@@ -94,7 +94,7 @@ export class MarcaHerramientaService {
     });
     if (!marcaHerramienta) {
       throw new BadRequestException(
-        `No existe marca de herramienta con el cóigo ${mheCodigo}`,
+        `No existe marca de herramienta con el código ${mheCodigo}`,
       );
     }
 
@@ -112,10 +112,10 @@ export class MarcaHerramientaService {
       await queryRunner.startTransaction();
       await this.findOne(mheCodigo);
       updateMarcaHerramientaDto.mheCodigo = mheCodigo;
-      const tipoServicio = MarcaHerramienta.fromUpdateDto(
+      const marcaHerramienta = MarcaHerramienta.fromUpdateDto(
         updateMarcaHerramientaDto,
       );
-      await queryRunner.manager.save(tipoServicio);
+      await queryRunner.manager.save(marcaHerramienta);
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner!.rollbackTransaction();
