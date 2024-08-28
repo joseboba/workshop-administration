@@ -17,6 +17,8 @@ import { Taller } from '../api/taller/entities/taller.entity';
 import { DiasNoDisponible } from '../api/dias_no_disponibles/entities/dias_no_disponible.entity';
 import { Vehiculo } from '../api/vehiculo/entities/vehiculo.entity';
 import { Cita } from '../api/cita/entities/cita.entity';
+import { Herramienta } from '../api/herramienta/entities/herramienta.entity';
+import { EquipoTaller } from '../api/equipo_taller/entities/equipo_taller.entity';
 
 export const entities = [
   TipoServicio,
@@ -38,4 +40,6 @@ export const entities = [
   DiasNoDisponible,
   Vehiculo,
   Cita,
+  Herramienta,
+  EquipoTaller,
 ];

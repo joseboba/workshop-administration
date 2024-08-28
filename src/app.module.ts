@@ -23,6 +23,8 @@ import { TallerModule } from './api/taller/taller.module';
 import { DiasNoDisponiblesModule } from './api/dias_no_disponibles/dias_no_disponibles.module';
 import { VehiculoModule } from './api/vehiculo/vehiculo.module';
 import { CitaModule } from './api/cita/cita.module';
+import { HerramientaModule } from './api/herramienta/herramienta.module';
+import { EquipoTallerModule } from './api/equipo_taller/equipo_taller.module';
 
 @Module({
   imports: [
@@ -57,6 +59,8 @@ import { CitaModule } from './api/cita/cita.module';
     DiasNoDisponiblesModule,
     VehiculoModule,
     CitaModule,
+    HerramientaModule,
+    EquipoTallerModule,
   ],
   controllers: [],
   providers: [

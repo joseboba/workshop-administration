@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EspecialidadMecanica } from '../../especialidad_mecanica/entities/especialidad_mecanica.entity';
 import { CreateEspecialidadMecanicaDto, UpdateEspecialidadMecanicaDto } from '../../especialidad_mecanica/dto';
 import { CreateMecanicoDto, UpdateMecanicoDto } from '../dto';
+import { Herramienta } from '../../herramienta/entities/herramienta.entity';
 
 @Entity('taa_mecanico')
 export class Mecanico {
@@ -43,6 +44,8 @@ export class Mecanico {
   @ManyToOne(() => EspecialidadMecanica, (entity) => entity.mecanicos)
   @JoinColumn({ name: 'eme_codigo' })
   especialidadMecanica: EspecialidadMecanica;
+  @JoinColumn({ name: 'mec_codigo' })
+  herramientas: Herramienta[];
 
   public static fromUpdateDto(updateDto: UpdateMecanicoDto): Mecanico {
     const mecanico = new Mecanico();

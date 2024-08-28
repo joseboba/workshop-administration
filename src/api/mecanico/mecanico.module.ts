@@ -9,6 +9,7 @@ import { EspecialidadMecanicaModule } from '../especialidad_mecanica/especialida
   controllers: [MecanicoController],
   providers: [MecanicoService],
   imports: [TypeOrmModule.forFeature([Mecanico]), EspecialidadMecanicaModule],
+  exports: [MecanicoService],
 })
 export class MecanicoModule {
 }
