@@ -6,28 +6,34 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { DiasNoDisponible } from './entities/dias_no_disponible.entity';
 import { PaginationResponseDto } from '../../commons';
-import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
+import {
+  camelToSnakeCase,
+  convertToLikeParameter,
+  transformToAscOrDesc,
+} from '../../util';
 import { TallerService } from '../taller/taller.service';
 
 @Injectable()
 export class DiasNoDisponiblesService {
-
   constructor(
     @InjectRepository(DiasNoDisponible)
     private readonly diasNoDisponibleRepository: Repository<DiasNoDisponible>,
     private readonly tallerService: TallerService,
     private readonly dataSource: DataSource,
-  ) {
-  }
+  ) {}
 
-  async create(createDiasNoDisponibleDto: CreateDiasNoDisponibleDto): Promise<DiasNoDisponible> {
+  async create(
+    createDiasNoDisponibleDto: CreateDiasNoDisponibleDto,
+  ): Promise<DiasNoDisponible> {
     let queryRunner: QueryRunner;
     let response: DiasNoDisponible;
     try {
       queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      const taller = await this.tallerService.findOne(createDiasNoDisponibleDto.tllCodigo);
+      const taller = await this.tallerService.findOne(
+        createDiasNoDisponibleDto.tllCodigo,
+      );
       const entity = DiasNoDisponible.fromCreateDto(createDiasNoDisponibleDto);
       entity.taller = taller;
       response = await queryRunner.manager.save(entity);
@@ -42,7 +48,9 @@ export class DiasNoDisponiblesService {
     return response;
   }
 
-  async findAll(diasNoDisponiblesPaginationFilters: DiasNoDisponiblesPaginationFiltersDto): Promise<PaginationResponseDto<DiasNoDisponible>> {
+  async findAll(
+    diasNoDisponiblesPaginationFilters: DiasNoDisponiblesPaginationFiltersDto,
+  ): Promise<PaginationResponseDto<DiasNoDisponible>> {
     const {
       size = 10,
       page = 0,
@@ -61,8 +69,8 @@ export class DiasNoDisponiblesService {
     `;
 
     const queryBuilder = await this.diasNoDisponibleRepository
-        .createQueryBuilder('dnd')
-        .innerJoinAndSelect('dnd.taller', 'tll');
+      .createQueryBuilder('dnd')
+      .innerJoinAndSelect('dnd.taller', 'tll');
 
     const content = await queryBuilder
       .where(filters, parameters)
@@ -92,7 +100,7 @@ export class DiasNoDisponiblesService {
   async findOne(dndCodigo: number): Promise<DiasNoDisponible> {
     const diasNoDisponibles = await this.diasNoDisponibleRepository.findOne({
       relations: ['taller'],
-      where: {dndCodigo},
+      where: { dndCodigo },
     });
     if (!diasNoDisponibles) {
       throw new BadRequestException(
@@ -103,16 +111,23 @@ export class DiasNoDisponiblesService {
     return diasNoDisponibles;
   }
 
-  async update(dndCodigo: number, updateDiasNoDisponibleDto: UpdateDiasNoDisponibleDto) {
+  async update(
+    dndCodigo: number,
+    updateDiasNoDisponibleDto: UpdateDiasNoDisponibleDto,
+  ) {
     let queryRunner: QueryRunner;
     try {
       queryRunner = await this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
       await this.findOne(dndCodigo);
-      const taller = await this.tallerService.findOne(updateDiasNoDisponibleDto.tllCodigo);
+      const taller = await this.tallerService.findOne(
+        updateDiasNoDisponibleDto.tllCodigo,
+      );
       updateDiasNoDisponibleDto.dndCodigo = dndCodigo;
-      const diasNoDisponibles = DiasNoDisponible.fromUpdateDto(updateDiasNoDisponibleDto);
+      const diasNoDisponibles = DiasNoDisponible.fromUpdateDto(
+        updateDiasNoDisponibleDto,
+      );
       diasNoDisponibles.taller = taller;
       await queryRunner.manager.save(diasNoDisponibles);
       await queryRunner.commitTransaction();

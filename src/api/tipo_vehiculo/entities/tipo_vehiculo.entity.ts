@@ -1,6 +1,7 @@
 import { CreateTipoVehiculoDto, UpdateTipoVehiculoDto } from '../dto';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Vehiculo } from '../../vehiculo/entities/vehiculo.entity';
 
 @Entity('taa_tipo_vehiculo')
 export class TipoVehiculo {
@@ -14,6 +15,9 @@ export class TipoVehiculo {
   @ApiProperty()
   @Column({ name: 'tve_descripcion' })
   tveDescripcion: string;
+  @JoinColumn({ name: 'tve_codigo' })
+  @OneToMany(() => Vehiculo, (entity) => entity.tipoVehiculo)
+  vehiculos: Vehiculo[];
 
   public static fromUpdateDto(updateDto: UpdateTipoVehiculoDto): TipoVehiculo {
     const tipoVehiculo = new TipoVehiculo();

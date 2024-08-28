@@ -21,6 +21,8 @@ import { MarcaEquipoModule } from './api/marca_equipo/marca_equipo.module';
 import { MarcaProductoModule } from './api/marca_producto/marca_producto.module';
 import { TallerModule } from './api/taller/taller.module';
 import { DiasNoDisponiblesModule } from './api/dias_no_disponibles/dias_no_disponibles.module';
+import { VehiculoModule } from './api/vehiculo/vehiculo.module';
+import { CitaModule } from './api/cita/cita.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { DiasNoDisponiblesModule } from './api/dias_no_disponibles/dias_no_dispo
     MarcaProductoModule,
     TallerModule,
     DiasNoDisponiblesModule,
+    VehiculoModule,
+    CitaModule,
   ],
   controllers: [],
   providers: [

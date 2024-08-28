@@ -5,6 +5,7 @@ import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { TipoVehiculo } from './entities/tipo_vehiculo.entity';
 import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
 import { PaginationResponseDto } from '../../commons';
+import { TipoVehiculoModule } from './tipo_vehiculo.module';
 
 @Injectable()
 export class TipoVehiculoService {
@@ -88,7 +89,7 @@ export class TipoVehiculoService {
     return response;
   }
 
-  async findOne(tveCodigo: number) {
+  async findOne(tveCodigo: number): Promise<TipoVehiculo> {
     const tipoVehiculo = await this.tipoVehiculoRepository.findOneBy({
       tveCodigo,
     });

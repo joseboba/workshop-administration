@@ -8,5 +8,6 @@ import { TipoVehiculo } from './entities/tipo_vehiculo.entity';
   controllers: [TipoVehiculoController],
   providers: [TipoVehiculoService],
   imports: [TypeOrmModule.forFeature([TipoVehiculo])],
+  exports: [TipoVehiculoService],
 })
 export class TipoVehiculoModule {}
