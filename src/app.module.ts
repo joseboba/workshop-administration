@@ -16,6 +16,10 @@ import { NivelGravedadModule } from './api/nivel_gravedad/nivel_gravedad.module'
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MarcaVehiculoModule } from './api/marca_vehiculo/marca_vehiculo.module';
 import { TipoVehiculoModule } from './api/tipo_vehiculo/tipo_vehiculo.module';
+import { MarcaHerramientaModule } from './api/marca_herramienta/marca_herramienta.module';
+import { MarcaEquipoModule } from './api/marca_equipo/marca_equipo.module';
+import { MarcaProductoModule } from './api/marca_producto/marca_producto.module';
+import { TallerModule } from './api/taller/taller.module';
 
 @Module({
   imports: [
@@ -43,6 +47,10 @@ import { TipoVehiculoModule } from './api/tipo_vehiculo/tipo_vehiculo.module';
     NivelGravedadModule,
     MarcaVehiculoModule,
     TipoVehiculoModule,
+    MarcaHerramientaModule,
+    MarcaEquipoModule,
+    MarcaProductoModule,
+    TallerModule,
   ],
   controllers: [],
   providers: [

@@ -1,36 +1,33 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateMarcaVehiculoDto, UpdateMarcaVehiculoDto } from './dto';
+import { CreateMarcaEquipoDto } from './dto/create-marca_equipo.dto';
+import { UpdateMarcaEquipoDto } from './dto/update-marca_equipo.dto';
+import { MarcaEquipoPaginationFiltersDto } from './dto/marca-equipo-pagination-filters.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { MarcaVehiculo } from './entities/marca_vehiculo.entity';
+import { MarcaEquipo } from './entities/marca_equipo.entity';
 import { PaginationResponseDto } from '../../commons';
-import { MarcaVehiculoPaginationFiltersDto } from './dto/marca-vehiculo-pagination-filters.dto';
-import {
-  camelToSnakeCase,
-  convertToLikeParameter,
-  transformToAscOrDesc,
-} from '../../util';
-import { TipoVehiculo } from '../tipo_vehiculo/entities/tipo_vehiculo.entity';
+import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
 
 @Injectable()
-export class MarcaVehiculoService {
+export class MarcaEquipoService {
   constructor(
-    @InjectRepository(MarcaVehiculo)
-    private readonly marcaVehiculoRepository: Repository<MarcaVehiculo>,
+    @InjectRepository(MarcaEquipo)
+    private readonly marcaEquipoRepository: Repository<MarcaEquipo>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) {
+  }
 
   async create(
-    createMarcaVehiculoDto: CreateMarcaVehiculoDto,
-  ): Promise<MarcaVehiculo> {
+    createMarcaEquipoDto: CreateMarcaEquipoDto,
+  ): Promise<MarcaEquipo> {
     let queryRunner: QueryRunner;
-    let response: MarcaVehiculo;
+    let response: MarcaEquipo;
     try {
       queryRunner = this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
       response = await queryRunner.manager.save(
-        MarcaVehiculo.fromCreateDto(createMarcaVehiculoDto),
+        MarcaEquipo.fromCreateDto(createMarcaEquipoDto),
       );
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -44,32 +41,34 @@ export class MarcaVehiculoService {
   }
 
   async findAll(
-    marcaVehiculoPaginationFilters: MarcaVehiculoPaginationFiltersDto,
-  ): Promise<PaginationResponseDto<MarcaVehiculo>> {
+    marcaEquipoPaginationFilters: MarcaEquipoPaginationFiltersDto,
+  ): Promise<PaginationResponseDto<MarcaEquipo>> {
     const {
       size = 10,
       page = 0,
-      sort = 'mveNombre,asc',
+      sort = 'meqNombre,asc',
       search = '',
-    } = marcaVehiculoPaginationFilters;
+    } = marcaEquipoPaginationFilters;
 
     const splitSortValues = sort.split(',');
     const skip = page * size;
     const parameters = {
       nombre: convertToLikeParameter(search),
+      descripcion: convertToLikeParameter(search),
     };
 
     const filters = `
-      (:nombre = '' or mv.mve_nombre like :nombre)
+      (:nombre = '' or mq.meq_nombre like :nombre) or
+      (:descripcion = '' or mq.meq_descripcion like :descripcion)
     `;
 
     const queryBuilder =
-      await this.marcaVehiculoRepository.createQueryBuilder('mv');
+      await this.marcaEquipoRepository.createQueryBuilder('mq');
 
     const content = await queryBuilder
       .where(filters, parameters)
       .orderBy(
-        `mv.${camelToSnakeCase(splitSortValues[0])}`,
+        `mq.${camelToSnakeCase(splitSortValues[0])}`,
         transformToAscOrDesc(splitSortValues[1]),
       )
       .limit(size)
@@ -82,7 +81,7 @@ export class MarcaVehiculoService {
       .getCount();
 
     const totalPages = Math.ceil(totalElements / size);
-    const response = new PaginationResponseDto<MarcaVehiculo>();
+    const response = new PaginationResponseDto<MarcaEquipo>();
     response.content = content;
     response.totalElements = totalElements;
     response.totalPages = totalPages;
@@ -91,31 +90,28 @@ export class MarcaVehiculoService {
     return response;
   }
 
-  async findOne(mveCodigo: number): Promise<MarcaVehiculo> {
-    const marcaVehiculo = await this.marcaVehiculoRepository.findOneBy({
-      mveCodigo,
+  async findOne(meqCodigo: number): Promise<MarcaEquipo> {
+    const marcaEquipo = await this.marcaEquipoRepository.findOneBy({
+      meqCodigo,
     });
-    if (!marcaVehiculo) {
+    if (!marcaEquipo) {
       throw new BadRequestException(
-        `No existe marca vehiculo con el cóigo ${mveCodigo}`,
+        `No existe tipo de vehiculo con el cóigo ${meqCodigo}`,
       );
     }
 
-    return marcaVehiculo;
+    return marcaEquipo;
   }
 
-  async update(
-    mveCodigo: number,
-    updateMarcaVehiculoDto: UpdateMarcaVehiculoDto,
-  ) {
+  async update(meqCodigo: number, updateMarcaEquipoDto: UpdateMarcaEquipoDto) {
     let queryRunner: QueryRunner;
     try {
       queryRunner = await this.dataSource.createQueryRunner();
       await queryRunner.connect();
       await queryRunner.startTransaction();
-      await this.findOne(mveCodigo);
-      updateMarcaVehiculoDto.mveCodigo = mveCodigo;
-      const tipoServicio = MarcaVehiculo.fromUpdateDto(updateMarcaVehiculoDto);
+      await this.findOne(meqCodigo);
+      updateMarcaEquipoDto.meqCodigo = meqCodigo;
+      const tipoServicio = MarcaEquipo.fromUpdateDto(updateMarcaEquipoDto);
       await queryRunner.manager.save(tipoServicio);
       await queryRunner.commitTransaction();
     } catch (e) {
@@ -126,8 +122,8 @@ export class MarcaVehiculoService {
     }
   }
 
-  async remove(mveCodigo: number) {
-    const marcaVehiculo = await this.findOne(mveCodigo);
-    await this.marcaVehiculoRepository.remove(marcaVehiculo);
+  async remove(meqCodigo: number) {
+    const marcaVehiculo = await this.findOne(meqCodigo);
+    await this.marcaEquipoRepository.remove(marcaVehiculo);
   }
 }

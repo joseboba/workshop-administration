@@ -10,6 +10,10 @@ import { NivelGravedad } from '../api/nivel_gravedad/entities/nivel_gravedad.ent
 import { TipoPago } from '../api/tipo_pago/entities/tipo_pago.entity';
 import { TipoVehiculo } from '../api/tipo_vehiculo/entities/tipo_vehiculo.entity';
 import { MarcaVehiculo } from '../api/marca_vehiculo/entities/marca_vehiculo.entity';
+import { MarcaEquipo } from '../api/marca_equipo/entities/marca_equipo.entity';
+import { MarcaHerramienta } from '../api/marca_herramienta/entities/marca_herramienta.entity';
+import { MarcaProducto } from '../api/marca_producto/entities/marca_producto.entity';
+import { Taller } from '../api/taller/entities/taller.entity';
 
 export const entities = [
   TipoServicio,
@@ -24,4 +28,8 @@ export const entities = [
   TipoPago,
   TipoVehiculo,
   MarcaVehiculo,
+  MarcaEquipo,
+  MarcaHerramienta,
+  MarcaProducto,
+  Taller,
 ];
