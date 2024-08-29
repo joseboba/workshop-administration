@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { TipoServicio } from '../../tipo_servicio/entities/tipo_servicio.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateServicioDto, UpdateServicioDto } from '../dto';
 import { ServicioRepuesto } from '../../servicio_repuesto/entities/servicio_repuesto.entity';
+import { ServicioProducto } from '../../servicio_producto/entities/servicio_producto.entity';
 
 @Entity('taa_servicio')
 export class Servicio {
@@ -45,7 +46,11 @@ export class Servicio {
   @JoinColumn({ name: 'tsr_codigo' })
   tipoServicio: TipoServicio;
   @JoinColumn({ name: 'srv_codigo' })
+  @OneToMany(() => ServicioRepuesto, (entity) => entity.servicio)
   serviciosRepuesto: ServicioRepuesto[];
+  @JoinColumn({ name: 'srv_codigo' })
+  @OneToMany(() => ServicioProducto, (entity) => entity.servicio)
+  servicioProductos: ServicioProducto[];
 
   public static fromUpdateDto(updateDto: UpdateServicioDto): Servicio {
     const servicio = new Servicio();

@@ -26,7 +26,7 @@ export class TypeOrmExceptionInterceptor implements NestInterceptor {
                 ),
             );
         }
-        return throwError(() => err);
+        return throwError(() => new InternalServerErrorException(err.message));
       }),
     );
   }

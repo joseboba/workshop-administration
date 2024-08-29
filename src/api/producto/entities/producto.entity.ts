@@ -1,9 +1,11 @@
 import { UpdateProductoDto } from '../dto/update-producto.dto';
 import { CreateProductoDto } from '../dto/create-producto.dto';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Proveedor } from '../../proveedor/entities/proveedor.entity';
 import { MarcaProducto } from '../../marca_producto/entities/marca_producto.entity';
+import { ProductoService } from '../producto.service';
+import { ServicioProducto } from '../../servicio_producto/entities/servicio_producto.entity';
 
 @Entity('taa_producto')
 export class Producto {
@@ -34,6 +36,9 @@ export class Producto {
   @JoinColumn({ name: 'map_codigo' })
   @ManyToOne(() => MarcaProducto, (entity) => entity.productos)
   marcaProducto: MarcaProducto;
+  @JoinColumn({ name: 'pro_codigo' })
+  @OneToMany(() => ServicioProducto, (entity) => entity.producto)
+  servicioProductos: ServicioProducto[];
 
   public static fromUpdateDto(updateDto: UpdateProductoDto): Producto {
     return this.parseDto(updateDto);

@@ -14,5 +14,6 @@ import { ProveedorModule } from '../proveedor/proveedor.module';
     MarcaProductoModule,
     ProveedorModule,
   ],
+  exports: [ProductoService]
 })
 export class ProductoModule {}
