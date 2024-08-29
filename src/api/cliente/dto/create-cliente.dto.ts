@@ -10,7 +10,7 @@ export class CreateClienteDto {
   @ApiProperty()
   @NotEmptyText({ message: 'El nombre es requerido' })
   @MaxLength(50, { message: 'El nombre puede ser máximo de 50 cáracteres' })
-  cliNombre: string;
+  cliNombres: string;
   @ApiProperty()
   @NotEmptyText({ message: 'El apellido es requerido' })
   @MaxLength(50, { message: 'El apellido puede ser máximo de 50 cáracteres' })
