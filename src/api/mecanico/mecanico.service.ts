@@ -1,20 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import {
-  CreateMecanicoDto,
-  MecanicoPaginationFiltersDto,
-  UpdateMecanicoDto,
-} from './dto';
+import { CreateMecanicoDto, MecanicoPaginationFiltersDto, UpdateMecanicoDto } from './dto';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { Mecanico } from './entities/mecanico.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EspecialidadMecanicaService } from '../especialidad_mecanica/especialidad_mecanica.service';
-import {
-  camelToSnakeCase,
-  convertToLikeParameter,
-  transformToAscOrDesc,
-} from '../../util';
+import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
 import { PaginationResponseDto } from '../../commons';
-import { Cliente } from '../cliente/entities/cliente.entity';
 
 @Injectable()
 export class MecanicoService {
@@ -23,7 +14,8 @@ export class MecanicoService {
     private readonly mecanicoRepository: Repository<Mecanico>,
     private readonly especialidadMecanicaService: EspecialidadMecanicaService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) {
+  }
 
   async create(createMecanicoDto: CreateMecanicoDto): Promise<Mecanico> {
     let queryRunner: QueryRunner;
@@ -77,16 +69,18 @@ export class MecanicoService {
 
     const filters = `
       (
-        (:nombres = '' or lower(m.cli_nombres) like :nombres) OR
-        (:apellidos = '' or lower(m.cli_apellidos) like :apellidos) 
+        (:nombres = '' or lower(m.mec_nombres) like :nombres) OR
+        (:apellidos = '' or lower(m.mec_apellidos) like :apellidos) 
       ) AND
-      (:dpi = '' or lower(m.cli_dpi) like :dpi) AND
-      (:nit = '' or lower(m.cli_nit) like :nit) AND
-      (:telefono = '' or lower(m.cli_telefono) like :telefono) AND
-      (:correo = '' or lower(m.cli_correo) like :correo) 
+      (:dpi = '' or lower(m.mec_dpi) like :dpi) AND
+      (:nit = '' or lower(m.mec_nit) like :nit) AND
+      (:telefono = '' or lower(m.mec_telefono) like :telefono) AND
+      (:correo = '' or lower(m.mec_correo) like :correo) 
     `;
 
-    const queryBuilder = await this.mecanicoRepository.createQueryBuilder('m');
+    const queryBuilder = await this.mecanicoRepository
+      .createQueryBuilder('m')
+      .innerJoinAndSelect('m.especialidadMecanica', 'eme');
 
     const content = await queryBuilder
       .where(filters, parameters)
