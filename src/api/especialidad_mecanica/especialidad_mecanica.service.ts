@@ -8,12 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EspecialidadMecanica } from './entities/especialidad_mecanica.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { PaginationResponseDto } from '../../commons';
-import {
-  camelToSnakeCase,
-  convertToLikeParameter,
-  transformToAscOrDesc,
-} from '../../util';
-import { Servicio } from '../servicio/entities/servicio.entity';
+import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
 
 @Injectable()
 export class EspecialidadMecanicaService {
@@ -21,7 +16,8 @@ export class EspecialidadMecanicaService {
     @InjectRepository(EspecialidadMecanica)
     private readonly especialidadMecanicaRepository: Repository<EspecialidadMecanica>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) {
+  }
 
   async create(
     createEspecialidadMecanicaDto: CreateEspecialidadMecanicaDto,
@@ -67,7 +63,7 @@ export class EspecialidadMecanicaService {
 
     const filters = `
       (:nombre = '' or LOWER(em.eme_nombre) like :nombre) or
-      (:descripcion = '' or LOWER(em.eme_nombre) like :descripcion)
+      (:descripcion = '' or LOWER(em.eme_descripcion) like :descripcion)
     `;
 
     const queryBuilder =
