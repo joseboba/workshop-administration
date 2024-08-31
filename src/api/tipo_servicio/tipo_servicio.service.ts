@@ -3,12 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TipoServicio } from './entities/tipo_servicio.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { PaginationResponseDto } from '../../commons';
-import {
-  CreateTipoServicioDto,
-  TipoServicioPaginationFiltersDto,
-  UpdateTipoServicioDto,
-} from './dto';
-import { NoContentException } from '../../util/exceptions';
+import { CreateTipoServicioDto, TipoServicioPaginationFiltersDto, UpdateTipoServicioDto } from './dto';
 import { camelToSnakeCase, transformToAscOrDesc } from '../../util';
 
 @Injectable()
@@ -17,7 +12,8 @@ export class TipoServicioService {
     @InjectRepository(TipoServicio)
     private readonly tipoServicioRepository: Repository<TipoServicio>,
     private readonly dataSource: DataSource,
-  ) {}
+  ) {
+  }
 
   async create(
     createTipoServicioDto: CreateTipoServicioDto,
@@ -71,7 +67,7 @@ export class TipoServicioService {
     const content = await queryBuilder
       .where(where, parameters)
       .orderBy(
-        `s.${camelToSnakeCase(splitSortValues[0])}`,
+        `ts.${camelToSnakeCase(splitSortValues[0])}`,
         transformToAscOrDesc(splitSortValues[1]),
       )
       .limit(size)
