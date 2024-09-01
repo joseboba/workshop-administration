@@ -108,8 +108,9 @@ export class MecanicoService {
   }
 
   async findOne(mecCodigo: number): Promise<Mecanico> {
-    const mecanico = await this.mecanicoRepository.findOneBy({
-      mecCodigo,
+    const mecanico = await this.mecanicoRepository.findOne({
+      relations: ['especialidadMecanica'],
+      where: { mecCodigo },
     });
 
     if (!mecanico) {
