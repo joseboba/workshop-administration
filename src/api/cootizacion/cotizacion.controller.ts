@@ -4,9 +4,9 @@ import { CreateCotizacionDto } from './dto/create-cotizacion.dto';
 import { UpdateCotizacionDto } from './dto/update-cotizacion.dto';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Cotizacion } from './entities/cotizacion.entity';
-import { findAllSchema } from '../cita/swagger/swagger-schema';
 import { CotizacionPaginationFiltersDto } from './dto/cotizacion-pagination-filters.dto';
 import { PaginationResponseDto } from '../../commons';
+import { findAllSchema } from './swagger/swagger-schema';
 
 @Controller('cotizacion')
 @ApiTags('Cotizacion')

@@ -12,7 +12,11 @@ import { Herramienta } from './entities/herramienta.entity';
 import { MecanicoService } from '../mecanico/mecanico.service';
 import { MarcaHerramientaService } from '../marca_herramienta/marca_herramienta.service';
 import { PaginationResponseDto } from '../../commons';
-import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
+import {
+  camelToSnakeCase,
+  convertToLikeParameter,
+  transformToAscOrDesc,
+} from '../../util';
 import { MarcaHerramienta } from '../marca_herramienta/entities/marca_herramienta.entity';
 
 @Injectable()
@@ -55,7 +59,9 @@ export class HerramientaService {
     return response;
   }
 
-  async findAll(herramientaPaginationFilter: HerramientaPaginationFiltersDto): Promise<PaginationResponseDto<Herramienta>> {
+  async findAll(
+    herramientaPaginationFilter: HerramientaPaginationFiltersDto,
+  ): Promise<PaginationResponseDto<Herramienta>> {
     const {
       size = 10,
       page = 0,
@@ -71,7 +77,7 @@ export class HerramientaService {
     };
 
     const filters = `
-      (:nombre = '' or lower(her.her_nombre) like :nombre) and
+      (:nombre = '' or lower(her.her_nombre) like :nombre) or
       (:descripcion = '' or lower(her.her_descripcion) like :descripcion)
     `;
 
