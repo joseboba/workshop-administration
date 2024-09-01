@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateClienteDto, UpdateClienteDto } from '../dto';
 import { Vehiculo } from '../../vehiculo/entities/vehiculo.entity';
 import { Cotizacion } from '../../cootizacion/entities/cotizacion.entity';
+import { Usuario } from '../../usuario/entities/usuario.entity';
 
 @Entity('taa_cliente')
 export class Cliente {
@@ -32,6 +33,9 @@ export class Cliente {
   vehiculos: Vehiculo[];
   @JoinColumn({ name: 'cli_codigo' })
   cootizaciones: Cotizacion[];
+  @JoinColumn({ name: 'cli_codigo' })
+  @OneToOne(() => Usuario, (entity) => entity.cliente)
+  usuario: Usuario;
 
   public static fromUpdateDto(updateDto: UpdateClienteDto): Cliente {
     const cliente = new Cliente();

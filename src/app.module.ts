@@ -29,6 +29,7 @@ import { ProductoModule } from './api/producto/producto.module';
 import { CotizacionModule } from './api/cootizacion/cotizacion.module';
 import { ServicioProductoModule } from './api/servicio_producto/servicio_producto.module';
 import { ServicioRepuestoModule } from './api/servicio_repuesto/servicio_repuesto.module';
+import { UsuarioModule } from './api/usuario/usuario.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { ServicioRepuestoModule } from './api/servicio_repuesto/servicio_repuest
     CotizacionModule,
     ServicioProductoModule,
     ServicioRepuestoModule,
+    UsuarioModule,
   ],
   controllers: [],
   providers: [
