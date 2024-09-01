@@ -104,7 +104,13 @@ export class ServicioService {
 
   async findOne(srvCodigo: number) {
     const servicio = await this.servicioRepository.findOne({
-      relations: ['tipoServicio'],
+      relations: [
+        'tipoServicio',
+        'serviciosRepuesto',
+        'serviciosRepuesto.repuesto',
+        'servicioProductos',
+        'servicioProductos.producto',
+      ],
       where: {
         srvCodigo,
       },

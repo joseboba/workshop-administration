@@ -45,9 +45,11 @@ export class Servicio {
   @ManyToOne(() => TipoServicio, (entity) => entity.servicios)
   @JoinColumn({ name: 'tsr_codigo' })
   tipoServicio: TipoServicio;
+  @ApiProperty({ type: () => ServicioRepuesto, isArray: true })
   @JoinColumn({ name: 'srv_codigo' })
   @OneToMany(() => ServicioRepuesto, (entity) => entity.servicio)
   serviciosRepuesto: ServicioRepuesto[];
+  @ApiProperty({ type: () => ServicioProducto, isArray: true })
   @JoinColumn({ name: 'srv_codigo' })
   @OneToMany(() => ServicioProducto, (entity) => entity.servicio)
   servicioProductos: ServicioProducto[];
