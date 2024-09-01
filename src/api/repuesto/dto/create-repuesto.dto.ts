@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsPositive, MaxLength } from 'class-validator';
 import { NotEmptyText } from '../../../config';
 
 export class CreateRepuestoDto {
@@ -24,10 +24,12 @@ export class CreateRepuestoDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'El precio es requerido' })
   @IsNumber()
+  @IsPositive()
   repPrecio: number;
   @ApiProperty()
   @IsNotEmpty({ message: 'La cantidad disponible es requerida' })
   @IsNumber()
+  @IsPositive()
   repCantidadDisponible: number;
   @ApiProperty()
   @IsNotEmpty({ message: 'El proveedor es requerido' })

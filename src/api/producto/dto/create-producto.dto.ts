@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { NotEmptyText } from '../../../config';
 import { Constants } from '../../../util/constants';
-import { IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateProductoDto {
@@ -14,10 +14,12 @@ export class CreateProductoDto {
   @ApiProperty()
   @IsNotEmpty({ message: Constants.requiredError('Precio Compra') })
   @IsNumber()
+  @IsPositive()
   proPrecioCompra: number;
   @ApiProperty()
   @IsNotEmpty({ message: Constants.requiredError('Cantidad Disponible') })
   @IsNumber()
+  @IsPositive()
   proCantidadDisponible: number;
   @ApiProperty()
   @Type(() => Date)

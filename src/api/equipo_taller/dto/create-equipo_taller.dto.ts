@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { NotEmptyText } from '../../../config';
 import { Constants } from '../../../util/constants';
-import { IsDate, IsNotEmpty, IsNumber, MaxLength } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsPositive, MaxLength } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateEquipoTallerDto {
@@ -25,6 +25,7 @@ export class CreateEquipoTallerDto {
   @ApiProperty()
   @IsNotEmpty({ message: Constants.requiredError('Estado') })
   @IsNumber()
+  @IsPositive()
   etaEstado: number;
   @ApiProperty()
   @IsNotEmpty({ message: Constants.requiredError('Mecanico') })
