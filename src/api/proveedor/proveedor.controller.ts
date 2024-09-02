@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, 
 import { ProveedorService } from './proveedor.service';
 import { CreateProveedorDto, ProveedorPaginationFilterDto, UpdateProveedorDto } from './dto';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { findAllSchema } from '../tipo_repuesto/swagger/swagger-schema';
+import { findAllSchema } from './swagger/swagger-schema';
 import { Proveedor } from './entities/proveedor.entity';
 import { PaginationResponseDto } from '../../commons';
 

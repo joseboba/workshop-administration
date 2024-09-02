@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsPositive, Min } from 'class-validator';
 import { Constants } from '../../../util/constants';
 import { Type } from 'class-transformer';
 
@@ -14,16 +14,16 @@ export class CreateCotizacionDto {
   cotVigente: boolean;
   @ApiProperty()
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   @IsNotEmpty({ message: Constants.requiredError('Subtotal') })
   cotSubtotal: number;
   @ApiProperty()
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   cotDescuento: number;
   @ApiProperty()
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   @IsNotEmpty({ message: Constants.requiredError('Total') })
   cotTotal: number;
   @ApiProperty()

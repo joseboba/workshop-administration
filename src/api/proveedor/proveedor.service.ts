@@ -62,7 +62,7 @@ export class ProveedorService {
          (:nombreContacto = '' or LOWER(p.prv_nombre_contacto) like :nombreContacto)
       ) AND
       (:telefono = '' OR LOWER(p.prv_telefono) like :telefono) AND
-      (:correo = '' OR LOWER(p.correo) like :correo)
+      (:correo = '' OR LOWER(p.prv_correo) like :correo)
     `;
 
     const queryBuilder = await this.proveedorRepository.createQueryBuilder('p');

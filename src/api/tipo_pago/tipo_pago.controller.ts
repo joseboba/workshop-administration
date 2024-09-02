@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { TipoPagoService } from './tipo_pago.service';
 import { CreateTipoPagoDto, TipoPagoPaginationFiltersDto, UpdateTipoPagoDto } from './dto';
 import { ApiExtraModels, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -36,7 +36,7 @@ export class TipoPagoController {
     status: HttpStatus.OK,
     type: TipoPago,
   })
-  findOne(@Param('tpaCodigo') tpaCodigo: string) {
+  findOne(@Param('tpaCodigo', ParseIntPipe) tpaCodigo: string) {
     return this.tipoPagoService.findOne(tpaCodigo);
   }
 
@@ -44,7 +44,7 @@ export class TipoPagoController {
   @ApiResponse({
     status: HttpStatus.OK,
   })
-  update(@Param('tpaCodigo') tpaCodigo: string, @Body() updateTipoPagoDto: UpdateTipoPagoDto) {
+  update(@Param('tpaCodigo', ParseIntPipe) tpaCodigo: string, @Body() updateTipoPagoDto: UpdateTipoPagoDto) {
     return this.tipoPagoService.update(tpaCodigo, updateTipoPagoDto);
   }
 
@@ -52,7 +52,7 @@ export class TipoPagoController {
   @ApiResponse({
     status: HttpStatus.OK,
   })
-  remove(@Param('tpaCodigo') tpaCodigo: string) {
+  remove(@Param('tpaCodigo', ParseIntPipe) tpaCodigo: string) {
     return this.tipoPagoService.remove(tpaCodigo);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CotizacionService } from './cotizacion.service';
 import { CreateCotizacionDto } from './dto/create-cotizacion.dto';
 import { UpdateCotizacionDto } from './dto/update-cotizacion.dto';
@@ -40,7 +40,7 @@ export class CotizacionController {
     status: HttpStatus.OK,
     type: Cotizacion,
   })
-  findOne(@Param('cotCodigo') cotCodigo: number) {
+  findOne(@Param('cotCodigo', ParseIntPipe) cotCodigo: number) {
     return this.cotizacionService.findOne(cotCodigo);
   }
 
@@ -48,7 +48,7 @@ export class CotizacionController {
   @ApiResponse({
     status: HttpStatus.OK,
   })
-  update(@Param('cotCodigo') cotCodigo: number, @Body() updateCotizacionDto: UpdateCotizacionDto) {
+  update(@Param('cotCodigo', ParseIntPipe) cotCodigo: number, @Body() updateCotizacionDto: UpdateCotizacionDto) {
     return this.cotizacionService.update(cotCodigo, updateCotizacionDto);
   }
 
@@ -56,7 +56,7 @@ export class CotizacionController {
   @ApiResponse({
     status: HttpStatus.OK,
   })
-  remove(@Param('cotCodigo') cotCodigo: number) {
+  remove(@Param('cotCodigo', ParseIntPipe) cotCodigo: number) {
     return this.cotizacionService.remove(cotCodigo);
   }
 }
