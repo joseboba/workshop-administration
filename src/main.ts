@@ -10,7 +10,7 @@ async function bootstrap() {
   app.setGlobalPrefix('workshop-administration');
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
+      whitelist: false,
       forbidNonWhitelisted: false,
     }),
   );
