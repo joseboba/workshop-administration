@@ -25,7 +25,7 @@ export class CreateProductoDto {
   @Type(() => Date)
   @IsDate()
   @IsNotEmpty({ message: Constants.requiredError('Fecha Ingreso') })
-  proFechaInrgeso: Date;
+  proFechaIngreso: Date;
   @ApiProperty()
   @IsNotEmpty({ message: Constants.requiredError('Proveedor') })
   prvCodigo: number;

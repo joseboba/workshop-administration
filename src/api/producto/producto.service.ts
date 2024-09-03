@@ -2,22 +2,13 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Vehiculo } from '../vehiculo/entities/vehiculo.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { ClienteService } from '../cliente/cliente.service';
-import { MarcaVehiculoService } from '../marca_vehiculo/marca_vehiculo.service';
-import { TipoVehiculoService } from '../tipo_vehiculo/tipo_vehiculo.service';
 import { Producto } from './entities/producto.entity';
 import { MarcaProductoService } from '../marca_producto/marca_producto.service';
 import { ProveedorService } from '../proveedor/proveedor.service';
 import { PaginationResponseDto } from '../../commons';
-import {
-  camelToSnakeCase,
-  convertToLikeParameter,
-  transformToAscOrDesc,
-} from '../../util';
+import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
 import { ProductoPaginationFiltersDto } from './dto/producto-pagination-filters.dto';
-import { Proveedor } from '../proveedor/entities/proveedor.entity';
 
 @Injectable()
 export class ProductoService {
@@ -27,7 +18,8 @@ export class ProductoService {
     private readonly marcaProductoService: MarcaProductoService,
     private readonly proveedorService: ProveedorService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) {
+  }
 
   async create(createProductoDto: CreateProductoDto): Promise<Producto> {
     let queryRunner: QueryRunner;

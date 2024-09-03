@@ -27,7 +27,7 @@ export class Producto {
   proCantidadDisponible: number;
   @ApiProperty()
   @Column({ name: 'pro_fecha_ingreso' })
-  proFechaInrgeso: Date;
+  proFechaIngreso: Date;
   @ApiProperty({ type: () => Proveedor })
   @JoinColumn({ name: 'prv_codigo' })
   @ManyToOne(() => Proveedor, (entity) => entity.productos)
