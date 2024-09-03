@@ -130,7 +130,7 @@ export class CitaService {
       );
       const cita = Cita.fromUpdateDto(updateCitaDto);
       cita.vehiculo = vehiculo;
-      await queryRunner.manager.save(vehiculo);
+      await queryRunner.manager.save(cita);
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner!.rollbackTransaction();
