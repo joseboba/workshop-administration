@@ -10,6 +10,6 @@ export class CreateTipoVehiculoDto {
   tveNombre: string;
   @ApiProperty()
   @NotEmptyText({ message: Constants.requiredError('Descripción') })
-  @MaxLength(50, { message: Constants.maxLengthError('Descripción', 50) })
+  @MaxLength(150, { message: Constants.maxLengthError('Descripción', 150) })
   tveDescripcion: string;
 }
