@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { NotEmptyText } from '../../../config';
 import { Constants } from '../../../util/constants';
-import { IsDate, IsNotEmpty, IsNumber, IsPositive, MaxLength } from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsNumber, IsPositive, MaxLength, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateEquipoTallerDto {
@@ -25,7 +25,8 @@ export class CreateEquipoTallerDto {
   @ApiProperty()
   @IsNotEmpty({ message: Constants.requiredError('Estado') })
   @IsNumber()
-  @IsPositive()
+  @Min(0, { message: 'El valor minimo del estado puede ser 0' })
+  @IsInt({ message: 'El estado no puede ser decimal' })
   etaEstado: number;
   @ApiProperty()
   @IsNotEmpty({ message: Constants.requiredError('Mecanico') })
