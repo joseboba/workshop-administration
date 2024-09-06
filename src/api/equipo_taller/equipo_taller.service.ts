@@ -2,21 +2,13 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateEquipoTallerDto } from './dto/create-equipo_taller.dto';
 import { UpdateEquipoTallerDto } from './dto/update-equipo_taller.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Vehiculo } from '../vehiculo/entities/vehiculo.entity';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
-import { ClienteService } from '../cliente/cliente.service';
-import { MarcaVehiculoService } from '../marca_vehiculo/marca_vehiculo.service';
-import { TipoVehiculoService } from '../tipo_vehiculo/tipo_vehiculo.service';
 import { EquipoTaller } from './entities/equipo_taller.entity';
 import { MarcaEquipoService } from '../marca_equipo/marca_equipo.service';
 import { MecanicoService } from '../mecanico/mecanico.service';
 import { EquipoTallerPaginationDto } from './dto/equipo-taller-pagination.dto';
 import { PaginationResponseDto } from '../../commons';
-import {
-  camelToSnakeCase,
-  convertToLikeParameter,
-  transformToAscOrDesc,
-} from '../../util';
+import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
 
 @Injectable()
 export class EquipoTallerService {
@@ -26,7 +18,8 @@ export class EquipoTallerService {
     private readonly marcaEquipoService: MarcaEquipoService,
     private readonly mecanicoService: MecanicoService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) {
+  }
 
   async create(
     createEquipoTallerDto: CreateEquipoTallerDto,

@@ -7,6 +7,5 @@ export class TipoPagoPaginationFiltersDto extends IntersectionType(PaginationFil
     required: false,
     description: 'Busqueda por coincidencia de nombre o descripción',
   })
-  @IsString()
   search: string;
 }
