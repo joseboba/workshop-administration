@@ -134,7 +134,7 @@ export class ServicioService {
       updateServicioDto.srvCodigo = srvCodigo;
       await this.findOne(srvCodigo);
       const tipoServicio = await this.tipoServicioService.findOne(
-        updateServicioDto.srvCodigo,
+        updateServicioDto.tsrCodigo,
       );
       const servicio = Servicio.fromUpdateDto(updateServicioDto);
       servicio.tipoServicio = tipoServicio;
