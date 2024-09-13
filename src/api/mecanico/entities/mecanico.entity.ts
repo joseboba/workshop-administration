@@ -5,6 +5,7 @@ import { CreateMecanicoDto, UpdateMecanicoDto } from '../dto';
 import { Herramienta } from '../../herramienta/entities/herramienta.entity';
 import { EquipoTaller } from '../../equipo_taller/entities/equipo_taller.entity';
 import { Usuario } from '../../usuario/entities/usuario.entity';
+import { ServicioOrdenTrabajo } from '../../servicio_orden_trabajo/entities/servicio_orden_trabajo.entity';
 
 @Entity('taa_mecanico')
 export class Mecanico {
@@ -54,6 +55,9 @@ export class Mecanico {
   @JoinColumn({ name: 'mec_codigo' })
   @OneToOne(() => Usuario, (entity) => entity.mecanico)
   usuario: Usuario;
+  @OneToMany(() => ServicioOrdenTrabajo, (entity) => entity.mecanico)
+  @JoinColumn({ name: 'mec_codigo' })
+  serviciosOrdenTrabajo: ServicioOrdenTrabajo[];
 
   public static fromUpdateDto(updateDto: UpdateMecanicoDto): Mecanico {
     const mecanico = new Mecanico();

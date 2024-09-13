@@ -3,6 +3,7 @@ import { CreateTallerDto } from '../dto/create-taller.dto';
 import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { DiasNoDisponible } from '../../dias_no_disponibles/entities/dias_no_disponible.entity';
+import { OrdenTrabajo } from '../../orden_trabajo/entities/orden_trabajo.entity';
 
 @Entity('taa_taller')
 export class Taller {
@@ -25,6 +26,9 @@ export class Taller {
   @OneToMany(() => DiasNoDisponible, (entity) => entity.taller)
   @JoinColumn({ name: 'tll_codigo' })
   diasNoDisponibles: DiasNoDisponible[];
+  @OneToMany(() => OrdenTrabajo, (entity) => entity.taller)
+  @JoinColumn({ name: 'tll_codigo' })
+  ordenesTrabajo: OrdenTrabajo[];
 
   public static fromUpdateDto(
     updateDto: UpdateTallerDto,

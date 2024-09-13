@@ -24,6 +24,8 @@ import { Cotizacion } from '../api/cootizacion/entities/cotizacion.entity';
 import { ServicioRepuesto } from '../api/servicio_repuesto/entities/servicio_repuesto.entity';
 import { ServicioProducto } from '../api/servicio_producto/entities/servicio_producto.entity';
 import { Usuario } from '../api/usuario/entities/usuario.entity';
+import { OrdenTrabajo } from '../api/orden_trabajo/entities/orden_trabajo.entity';
+import { ServicioOrdenTrabajo } from '../api/servicio_orden_trabajo/entities/servicio_orden_trabajo.entity';
 
 export const entities = [
   TipoServicio,
@@ -52,4 +54,6 @@ export const entities = [
   ServicioRepuesto,
   ServicioProducto,
   Usuario,
+  OrdenTrabajo,
+  ServicioOrdenTrabajo
 ];

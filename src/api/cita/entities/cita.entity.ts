@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Vehiculo } from '../../vehiculo/entities/vehiculo.entity';
 import { UpdateCitaDto } from '../dto/update-cita.dto';
 import { CreateCitaDto } from '../dto/create-cita.dto';
+import { OrdenTrabajo } from '../../orden_trabajo/entities/orden_trabajo.entity';
 
 @Entity('taa_cita')
 export class Cita {
@@ -31,6 +32,9 @@ export class Cita {
   @JoinColumn({ name: 'veh_placa' })
   @ManyToOne(() => Vehiculo, (entity) => entity.citas)
   vehiculo: Vehiculo;
+  @JoinColumn({ name: 'cta_codigo' })
+  @OneToMany(() => OrdenTrabajo, (entity) => entity.cita)
+  ordenesTrabajo: OrdenTrabajo[];
 
   public static fromUpdateDto(
     updateDto: UpdateCitaDto,

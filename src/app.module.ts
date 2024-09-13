@@ -30,6 +30,8 @@ import { CotizacionModule } from './api/cootizacion/cotizacion.module';
 import { ServicioProductoModule } from './api/servicio_producto/servicio_producto.module';
 import { ServicioRepuestoModule } from './api/servicio_repuesto/servicio_repuesto.module';
 import { UsuarioModule } from './api/usuario/usuario.module';
+import { PrinterModule } from './api/printer/printer.module';
+import { ReportsModule } from './api/reports/reports.module';
 
 @Module({
   imports: [
@@ -71,6 +73,8 @@ import { UsuarioModule } from './api/usuario/usuario.module';
     ServicioProductoModule,
     ServicioRepuestoModule,
     UsuarioModule,
+    PrinterModule,
+    ReportsModule,
   ],
   controllers: [],
   providers: [

@@ -9,7 +9,7 @@ import { Servicio } from './entities/servicio.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TipoServicioService } from '../tipo_servicio/tipo_servicio.service';
 import { PaginationResponseDto } from '../../commons';
-import { camelToSnakeCase, transformToAscOrDesc } from '../../util';
+import { camelToSnakeCase, Format, transformToAscOrDesc } from '../../util';
 
 @Injectable()
 export class ServicioService {
@@ -151,5 +151,38 @@ export class ServicioService {
   async remove(srvCodigo: number) {
     const servicio = await this.findOne(srvCodigo);
     await this.servicioRepository.remove(servicio);
+  }
+
+  async serviciosMasMenosSolicitados(order: 'ASC' | 'DESC'): Promise<
+    {
+      codigo: number;
+      nombre: string;
+      costo: string;
+      solicitudes: string;
+    }[]
+  > {
+    const primitiveValues = await this.servicioRepository
+      .createQueryBuilder('s')
+      .innerJoinAndSelect('s.serviciosOrdenTrabajo', 'tsot')
+      .select('s.srv_codigo', 'codigo')
+      .addSelect('s.srv_nombre', 'nombre')
+      .addSelect('s.srv_costo', 'costo')
+      .addSelect('count(tsot)', 'solicitudes')
+      .groupBy('s.srv_codigo, s.srv_nombre, s.srv_costo')
+      .orderBy('solicitudes', order)
+      .limit(10)
+      .getRawMany<{
+        codigo: number;
+        nombre: string;
+        costo: number;
+        solicitudes: number;
+      }>();
+
+    return primitiveValues.map(({ codigo, costo, solicitudes, nombre }) => ({
+      codigo,
+      costo: Format.formatCurrency(+costo),
+      solicitudes: Format.formatNumber(+solicitudes),
+      nombre,
+    }));
   }
 }

@@ -10,6 +10,7 @@ import { PaginationResponseDto } from '../../commons';
 import {
   camelToSnakeCase,
   convertToLikeParameter,
+  Format,
   transformToAscOrDesc,
 } from '../../util';
 
@@ -150,5 +151,43 @@ export class RepuestoService {
   async remove(repCodigo: number) {
     const repuesto = await this.findOne(repCodigo);
     await this.repuestoRepository.remove(repuesto);
+  }
+
+  async repuestosMasMenosCaros(order: 'ASC' | 'DESC'): Promise<
+    {
+      codigo: number;
+      nombreProveedor: string;
+      precio: string;
+      cantidad: string;
+      nombre: string;
+    }[]
+  > {
+    const primitiveValues = await this.repuestoRepository
+      .createQueryBuilder('r')
+      .innerJoinAndSelect('r.proveedor', 'p')
+      .select('r.rep_nombre', 'nombre')
+      .addSelect('r.rep_codigo', 'codigo')
+      .addSelect('r.rep_cantidad_disponible', 'cantidad')
+      .addSelect('r.rep_precio', 'precio')
+      .addSelect('p.prv_nombre', 'nombreProveedor')
+      .orderBy('precio', order)
+      .limit(10)
+      .getRawMany<{
+        codigo: number;
+        nombre: string;
+        cantidad: number;
+        precio: number;
+        nombreProveedor: string;
+      }>();
+
+    return primitiveValues.map(
+      ({ codigo, nombre, cantidad, precio, nombreProveedor }) => ({
+        codigo,
+        nombre,
+        cantidad: Format.formatNumber(cantidad),
+        precio: Format.formatCurrency(precio),
+        nombreProveedor,
+      }),
+    );
   }
 }

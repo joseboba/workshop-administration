@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { CreateServicioDto, UpdateServicioDto } from '../dto';
 import { ServicioRepuesto } from '../../servicio_repuesto/entities/servicio_repuesto.entity';
 import { ServicioProducto } from '../../servicio_producto/entities/servicio_producto.entity';
+import { ServicioOrdenTrabajo } from '../../servicio_orden_trabajo/entities/servicio_orden_trabajo.entity';
 
 @Entity('taa_servicio')
 export class Servicio {
@@ -53,6 +54,9 @@ export class Servicio {
   @JoinColumn({ name: 'srv_codigo' })
   @OneToMany(() => ServicioProducto, (entity) => entity.servicio)
   servicioProductos: ServicioProducto[];
+  @JoinColumn({ name: 'srv_codigo' })
+  @OneToMany(() => ServicioOrdenTrabajo, (entity) => entity.servicio)
+  serviciosOrdenTrabajo: ServicioOrdenTrabajo[];
 
   public static fromUpdateDto(updateDto: UpdateServicioDto): Servicio {
     const servicio = new Servicio();

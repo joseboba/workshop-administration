@@ -6,6 +6,7 @@ import { Cliente } from '../../cliente/entities/cliente.entity';
 import { MarcaVehiculo } from '../../marca_vehiculo/entities/marca_vehiculo.entity';
 import { TipoVehiculo } from '../../tipo_vehiculo/entities/tipo_vehiculo.entity';
 import { Cita } from '../../cita/entities/cita.entity';
+import { OrdenTrabajo } from '../../orden_trabajo/entities/orden_trabajo.entity';
 
 @Entity('taa_vehiculo')
 export class Vehiculo {
@@ -40,6 +41,9 @@ export class Vehiculo {
   @JoinColumn({ name: 'veh_placa' })
   @OneToMany(() => Cita, (entity) => entity.vehiculo)
   citas: Cita[];
+  @JoinColumn({ name: 'veh_placa' })
+  @OneToMany(() => OrdenTrabajo, (entity) => entity.vehiculo)
+  ordenesTrabajo: OrdenTrabajo[];
 
   public static fromUpdateDto(
     updateDto: UpdateVehiculoDto,
