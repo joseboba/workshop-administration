@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TipoServicioService } from '../tipo_servicio/tipo_servicio.service';
 import { PaginationResponseDto } from '../../commons';
 import { camelToSnakeCase, Format, transformToAscOrDesc } from '../../util';
+import { ServicioOrdenTrabajo } from '../servicio_orden_trabajo/entities/servicio_orden_trabajo.entity';
 
 @Injectable()
 export class ServicioService {
@@ -183,6 +184,75 @@ export class ServicioService {
       costo: Format.formatCurrency(+costo),
       solicitudes: Format.formatNumber(+solicitudes),
       nombre,
+    }));
+  }
+
+  async marcasDeCarrosMasAtendidas(): Promise<
+    {
+      nombre: string;
+      cantidad: string;
+      porcentaje: string;
+    }[]
+  > {
+    const primitiveValues = await this.servicioRepository
+      .createQueryBuilder('s')
+      .innerJoinAndSelect('s.serviciosOrdenTrabajo', 'tsot')
+      .innerJoinAndSelect('tsot.ordenTrabajo', 'tot')
+      .innerJoinAndSelect('tot.vehiculo', 'tv')
+      .innerJoinAndSelect('tv.marcaVehiculo', 'tmv')
+      .select('tmv.mve_nombre', 'nombre')
+      .addSelect('count(tsot)', 'cantidad')
+      .addSelect(
+        `((select count(*) from taller_automotriz.taa_servicio_orden_trabajo) / COUNT(tsot)) * 100`,
+        'porcentaje',
+      )
+      .groupBy('tmv.mve_nombre')
+      .limit(10)
+      .getRawMany<{
+        nombre: string;
+        cantidad: string;
+        porcentaje: string;
+      }>();
+
+    return primitiveValues.map(({ porcentaje, cantidad, nombre }) => ({
+      porcentaje: `${Format.formatDecimal(+porcentaje)}%`,
+      nombre,
+      cantidad: Format.formatNumber(+cantidad),
+    }));
+  }
+
+  async getClientesMasRecurrentes(): Promise<
+    {
+      cliente: string;
+      vehiculo: string;
+      modelo: string;
+      visitas: string;
+    }[]
+  > {
+    const primitiveValues = await this.servicioRepository
+      .createQueryBuilder('s')
+      .innerJoinAndSelect('s.serviciosOrdenTrabajo', 'tsot')
+      .innerJoinAndSelect('tsot.ordenTrabajo', 'tot')
+      .innerJoinAndSelect('tot.vehiculo', 'tv')
+      .innerJoinAndSelect('tv.cliente', 'cli')
+      .select(`cli.cli_nombres || ' ' || cli.cli_apellidos `, 'cliente')
+      .addSelect('tv.veh_placa', 'vehiculo')
+      .addSelect('tv.veh_modelo', 'modelo')
+      .addSelect('count(tsot)', 'visitas')
+      .groupBy('cli.cli_apellidos, cli.cli_nombres, tv.veh_placa')
+      .limit(10)
+      .getRawMany<{
+        cliente: string;
+        vehiculo: string;
+        modelo: string;
+        visitas: string;
+      }>();
+
+    return primitiveValues.map(({ cliente, vehiculo, modelo, visitas }) => ({
+      cliente,
+      vehiculo,
+      modelo,
+      visitas: Format.formatNumber(+visitas),
     }));
   }
 }

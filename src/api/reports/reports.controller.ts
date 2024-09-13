@@ -43,4 +43,24 @@ export class ReportsController {
     pdfDoc.pipe(response);
     pdfDoc.end();
   }
+
+  @Get('marcasMasAtendidas')
+  async getMarcasMasAtendidas(@Res() response: Response) {
+    const pdfDoc = await this.reportsService.getMarcasMasAtendidas();
+
+    pdfDoc.info.Title = 'Marcas mas atendidas';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  @Get('clientesMasRecurrentes')
+  async getClientesMasRecurrentes(@Res() response: Response) {
+    const pdfDoc = await this.reportsService.getClientesMasRecurrentes();
+
+    pdfDoc.info.Title = 'Clientes mas recurrentes';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
 }

@@ -7,6 +7,17 @@ export class Format {
     return Intl.NumberFormat().format(value);
   };
 
+  static formatDecimal = (value: number): string => {
+    if (value === null) {
+      throw new Error('Value is required');
+    }
+
+    return Intl.NumberFormat('es-GT', {
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    }).format(value);
+  }
+
   static formatCurrency = (
     value: number | null,
     locale: string = 'es-GT',

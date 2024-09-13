@@ -92,10 +92,50 @@ export class ReportsService {
 
   async getRepuestoMenosCaros(): Promise<PDFKit.PDFDocument> {
     const result = await this.repuesto.repuestosMasMenosCaros('ASC');
-    const content = this.getRepuestoMasMenosCaros(
-      result,
-      'MENOS',
-    );
+    const content = this.getRepuestoMasMenosCaros(result, 'MENOS');
+    const docDefinition = generalReport(content);
+    return this.printer.createPdf(docDefinition);
+  }
+
+  async getMarcasMasAtendidas(): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.marcasDeCarrosMasAtendidas();
+    const content: GeneralReport = {
+      title: `LAS 10 MARCAS DE CARRO MÁS ATENDIDAS`,
+      table: {
+        header: {
+          headers: ['MARCA', 'CANTIDAD', '% DEL TOTAL'],
+          widths: ['*', 'auto', 'auto'],
+        },
+        content: result.map((item) => [
+          { text: item.nombre, alignment: 'left' },
+          { text: item.cantidad, alignment: 'right' },
+          { text: item.porcentaje, alignment: 'right' },
+        ]),
+      },
+    };
+
+    const docDefinition = generalReport(content);
+    return this.printer.createPdf(docDefinition);
+  }
+
+  async getClientesMasRecurrentes(): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.getClientesMasRecurrentes();
+    const content: GeneralReport = {
+      title: `LAS 10 CLIENTES MÁS RECURRENTES`,
+      table: {
+        header: {
+          headers: ['CLIENTE', 'VEHICULO', 'MODELO', 'NO. VISITAS'],
+          widths: ['*', 'auto', 'auto', 'auto'],
+        },
+        content: result.map((item) => [
+          { text: item.cliente, alignment: 'left' },
+          { text: item.vehiculo, alignment: 'left' },
+          { text: item.modelo, alignment: 'left' },
+          { text: item.visitas, alignment: 'right' },
+        ]),
+      },
+    };
+
     const docDefinition = generalReport(content);
     return this.printer.createPdf(docDefinition);
   }
