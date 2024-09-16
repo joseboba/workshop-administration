@@ -117,4 +117,14 @@ export class ReportsController {
     pdfDoc.pipe(response);
     pdfDoc.end();
   }
+
+  @Get('diasConMasMenosCitas')
+  async getDiasConMasMenosCitas(@Res() response: Response) {
+    const pdfDoc = await this.reportsService.diasConMasMenosCitas();
+
+    pdfDoc.info.Title = 'Dias con más y menos citas';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
 }

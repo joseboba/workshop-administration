@@ -4,6 +4,7 @@ import { PrinterService } from '../printer/printer.service';
 import { ServicioService } from '../servicio/servicio.service';
 import { RepuestoService } from '../repuesto/repuesto.service';
 import { CitaService } from '../cita/cita.service';
+import { citaReport, GeneralReportCitas } from './documents/cita_report';
 
 @Injectable()
 export class ReportsService {
@@ -222,6 +223,29 @@ export class ReportsService {
       },
     };
     const docDefinition = generalReport(content);
+    return this.printer.createPdf(docDefinition);
+  }
+
+  async diasConMasMenosCitas(): Promise<PDFKit.PDFDocument> {
+    const result = await this.cita.getDiaDeLaSemanaConMasMenosCitas();
+    const content: GeneralReportCitas = {
+      title: `DÍAS DE LA SEMANA CON MÁS Y MENOS CITAS`,
+      table: {
+        header: {
+          headers: ['DIA DE LA SEMANA', 'NÚMERO DE CITAS'],
+          widths: ['auto', 'auto'],
+        },
+        content: result.allDays.map((item) => [
+          { text: item.dia, alignment: 'left' },
+          { text: item.numeroCitas, alignment: 'left' },
+        ]),
+      },
+      diaMenosCitas: result.diaMenosCitas.dia,
+      numeroMenosCitas: result.diaMenosCitas.numeroCitas,
+      diasMasCitas: result.diaMasCitas.dia,
+      numeroMasCitas: result.diaMasCitas.numeroCitas,
+    };
+    const docDefinition = citaReport(content);
     return this.printer.createPdf(docDefinition);
   }
 }
