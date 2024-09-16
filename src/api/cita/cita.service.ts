@@ -7,7 +7,12 @@ import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { Cita } from './entities/cita.entity';
 import { VehiculoService } from '../vehiculo/vehiculo.service';
 import { PaginationResponseDto } from '../../commons';
-import { camelToSnakeCase, convertToLikeParameter, transformToAscOrDesc } from '../../util';
+import {
+  camelToSnakeCase,
+  convertToLikeParameter,
+  Format,
+  transformToAscOrDesc,
+} from '../../util';
 
 @Injectable()
 export class CitaService {
@@ -16,8 +21,7 @@ export class CitaService {
     private readonly citaRepository: Repository<Cita>,
     private readonly vehiculoService: VehiculoService,
     private readonly dataSource: DataSource,
-  ) {
-  }
+  ) {}
 
   async create(createCitaDto: CreateCitaDto): Promise<Cita> {
     let queryRunner: QueryRunner;
@@ -143,5 +147,78 @@ export class CitaService {
   async remove(ctaCodigo: number) {
     const cita = await this.findOne(ctaCodigo);
     await this.citaRepository.remove(cita);
+  }
+
+  async getDiaDeLaSemanaConMasMenosCitas() {
+    const allDays = await this.citaRepository
+      .createQueryBuilder()
+      .select(
+        `
+          CASE
+            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 1 THEN 'Lunes'
+            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 2 THEN 'Martes'
+            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 3 THEN 'Miércoles'
+            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 4 THEN 'Jueves'
+            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 5 THEN 'Viernes'
+            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 6 THEN 'Sábado'
+            ELSE 'Domingo'
+          END as dia
+      `,
+      )
+      .addSelect('count(*)', 'numeroCitas')
+      .orderBy('dia', 'ASC')
+      .groupBy('dia')
+      .getRawMany<{
+        dia: string;
+        numeroCitas: string;
+      }>();
+
+    const citasQuery = await this.citaRepository
+      .createQueryBuilder()
+      .select(
+        `
+            CASE
+                WHEN EXTRACT(DOW FROM cta_fecha_hora) = 1 THEN 'Lunes'
+                WHEN EXTRACT(DOW FROM cta_fecha_hora) = 2 THEN 'Martes'
+                WHEN EXTRACT(DOW FROM cta_fecha_hora) = 3 THEN 'Miércoles'
+                WHEN EXTRACT(DOW FROM cta_fecha_hora) = 4 THEN 'Jueves'
+                WHEN EXTRACT(DOW FROM cta_fecha_hora) = 5 THEN 'Viernes'
+                WHEN EXTRACT(DOW FROM cta_fecha_hora) = 6 THEN 'Sábado'
+                ELSE 'Domingo'
+            END as dia
+      `,
+      )
+      .addSelect('count(*)', 'numeroCitas')
+      .limit(1)
+      .groupBy('dia');
+
+    const menosCitas = await citasQuery
+      .orderBy('count(*)', 'ASC')
+      .getRawOne<{ dia: string; numeroCitas: string }>();
+
+    const masCitas = await citasQuery
+      .orderBy('count(*)', 'DESC')
+      .getRawOne<{ dia: string; numeroCitas: string }>();
+
+    const response: {
+      allDays: { dia: string; numeroCitas: string }[];
+      diaMenosCitas: { dia: string; numeroCitas: string };
+      diaMasCitas: { dia: string; numeroCitas: string };
+    } = {
+      allDays: allDays.map((item) => ({
+        dia: item.dia,
+        numeroCitas: Format.formatNumber(+item.numeroCitas),
+      })),
+      diaMenosCitas: {
+        dia: menosCitas.dia,
+        numeroCitas: Format.formatNumber(+menosCitas.numeroCitas),
+      },
+      diaMasCitas: {
+        dia: masCitas.dia,
+        numeroCitas: Format.formatNumber(+masCitas.numeroCitas),
+      },
+    };
+
+    return response;
   }
 }

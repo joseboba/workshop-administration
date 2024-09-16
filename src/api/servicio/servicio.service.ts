@@ -255,4 +255,126 @@ export class ServicioService {
       visitas: Format.formatNumber(+visitas),
     }));
   }
+
+  async getMecanicosConMasServicios(): Promise<
+    {
+      nombres: string;
+      apellidos: string;
+      servicios: number;
+      codigoEmpleado: number;
+      especialidadMecanica: string;
+    }[]
+  > {
+    const primitiveValues = await this.servicioRepository
+      .createQueryBuilder('s')
+      .innerJoinAndSelect('s.serviciosOrdenTrabajo', 'tsot')
+      .innerJoinAndSelect('tsot.mecanico', 'm')
+      .innerJoinAndSelect('m.especialidadMecanica', 'em')
+      .select('m.mec_nombres', 'nombres')
+      .addSelect('m.mec_apellidos', 'apellidos')
+      .addSelect('count(tsot)', 'servicios')
+      .addSelect('m.mec_codigo', 'codigoEmpleado')
+      .addSelect('em.eme_nombre', 'especialidadMecanica')
+      .groupBy('m.mec_nombres, m.mec_apellidos, m.mec_codigo, em.eme_nombre')
+      .limit(10)
+      .getRawMany<{
+        nombres: string;
+        apellidos: string;
+        servicios: string;
+        codigoEmpleado: string;
+        especialidadMecanica: string;
+      }>();
+
+    return primitiveValues.map(
+      ({
+        nombres,
+        apellidos,
+        servicios,
+        codigoEmpleado,
+        especialidadMecanica,
+      }) => ({
+        nombres,
+        apellidos,
+        servicios: +servicios,
+        codigoEmpleado: +codigoEmpleado,
+        especialidadMecanica,
+      }),
+    );
+  }
+
+  async getServiciosPrestadosMasMenosCaros(order: 'ASC' | 'DESC'): Promise<
+    {
+      codigo: string;
+      nombre: string;
+      descripcion: string;
+      costo: string;
+      cantidadSolicitudes: string;
+    }[]
+  > {
+    const primitiveValues = await this.servicioRepository
+      .createQueryBuilder('s')
+      .innerJoinAndSelect('s.serviciosOrdenTrabajo', 'tsot')
+      .select('s.srv_codigo', 'codigo')
+      .addSelect('s.srv_nombre', 'nombre')
+      .addSelect('s.srv_descripcion', 'descripcion')
+      .addSelect('s.srv_costo', 'costo')
+      .addSelect('count(tsot)', 'cantidadSolicitudes')
+      .groupBy('s.srv_codigo, s.srv_nombre, s.srv_descripcion, s.srv_costo')
+      .orderBy('costo', order)
+      .limit(5)
+      .getRawMany<{
+        codigo: string;
+        nombre: string;
+        descripcion: string;
+        costo: string;
+        cantidadSolicitudes: string;
+      }>();
+
+    return primitiveValues.map(
+      ({ codigo, nombre, descripcion, costo, cantidadSolicitudes }) => ({
+        codigo,
+        nombre,
+        descripcion,
+        costo: Format.formatCurrency(+costo),
+        cantidadSolicitudes: Format.formatNumber(+cantidadSolicitudes),
+      }),
+    );
+  }
+
+  async getVehiculosMasMenosNuevosReparados(order: 'ASC' | 'DESC'): Promise<
+    {
+      placa: string;
+      marca: string;
+      modelo: string;
+      vistas: number;
+    }[]
+  > {
+    const primitiveValues = await this.servicioRepository
+      .createQueryBuilder('s')
+      .innerJoinAndSelect('s.serviciosOrdenTrabajo', 'tsot')
+      .innerJoinAndSelect('tsot.ordenTrabajo', 'ot')
+      .innerJoinAndSelect('ot.vehiculo', 'v')
+      .innerJoinAndSelect('v.marcaVehiculo', 'mv')
+      .select('v.veh_placa', 'placa')
+      .addSelect('mv.mve_nombre', 'marca')
+      .addSelect('v.veh_modelo', 'modelo')
+      .addSelect('count(tsot.*)', 'vistas')
+      .limit(5)
+      .groupBy('v.veh_placa, mv.mve_nombre, v.veh_modelo')
+      .orderBy('v.veh_modelo', order)
+      .getRawMany<{
+        placa: string;
+        marca: string;
+        modelo: string;
+        vistas: string;
+      }>();
+
+    return primitiveValues.map(({ placa, marca, modelo, vistas }) => ({
+      placa,
+      marca,
+      modelo,
+      vistas: +vistas,
+    }));
+  }
+
 }

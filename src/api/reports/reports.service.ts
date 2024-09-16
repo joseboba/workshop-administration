@@ -3,12 +3,14 @@ import { GeneralReport, generalReport } from './documents/general_report';
 import { PrinterService } from '../printer/printer.service';
 import { ServicioService } from '../servicio/servicio.service';
 import { RepuestoService } from '../repuesto/repuesto.service';
+import { CitaService } from '../cita/cita.service';
 
 @Injectable()
 export class ReportsService {
   constructor(
     private readonly printer: PrinterService,
     private readonly servicio: ServicioService,
+    private readonly cita: CitaService,
     private readonly repuesto: RepuestoService,
   ) {}
 
@@ -136,6 +138,89 @@ export class ReportsService {
       },
     };
 
+    const docDefinition = generalReport(content);
+    return this.printer.createPdf(docDefinition);
+  }
+
+  async getMecanicosConMasServicios(): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.getMecanicosConMasServicios();
+    const content: GeneralReport = {
+      title: 'LOS 10 MECÁNICOS CON MÁS SERVICIOS',
+      table: {
+        header: {
+          headers: [
+            'NOMBRES',
+            'APELLIDOS',
+            'NO. SERVICIOS',
+            'CODIGO EMPLEADO',
+            'ESPECIALIDAD',
+          ],
+          widths: ['*', '*', 'auto', 'auto', 'auto'],
+        },
+        content: result.map((item) => [
+          { text: item.nombres, alignment: 'left' },
+          { text: item.apellidos, alignment: 'left' },
+          { text: item.servicios, alignment: 'right' },
+          { text: item.codigoEmpleado, alignment: 'right' },
+          { text: item.especialidadMecanica, alignment: 'left' },
+        ]),
+      },
+    };
+    const docDefinition = generalReport(content);
+    return this.printer.createPdf(docDefinition);
+  }
+
+  async getServiciosPrestadosMasMenosCaros(
+    order: 'ASC' | 'DESC',
+  ): Promise<PDFKit.PDFDocument> {
+    const result =
+      await this.servicio.getServiciosPrestadosMasMenosCaros(order);
+    const content: GeneralReport = {
+      title: `LOS 5 SERVICIOS PRESTADOS MÁS ${order === 'DESC' ? 'CAROS' : 'BARATOS'}`,
+      table: {
+        header: {
+          headers: [
+            'CODIGO',
+            'NOMBRE',
+            'DESCRIPCIÓN',
+            'PRECIO',
+            'CANTIDAD DE SOLICITUDES',
+          ],
+          widths: ['auto', 'auto', '*', 'auto', 'auto'],
+        },
+        content: result.map((item) => [
+          { text: item.codigo, alignment: 'right' },
+          { text: item.nombre, alignment: 'left' },
+          { text: item.descripcion, alignment: 'left' },
+          { text: item.costo, alignment: 'left' },
+          { text: item.cantidadSolicitudes, alignment: 'right' },
+        ]),
+      },
+    };
+    const docDefinition = generalReport(content);
+    return this.printer.createPdf(docDefinition);
+  }
+
+  async getVehiculosMasMenosNuevosReparados(
+    order: 'ASC' | 'DESC',
+  ): Promise<PDFKit.PDFDocument> {
+    const result =
+      await this.servicio.getVehiculosMasMenosNuevosReparados(order);
+    const content: GeneralReport = {
+      title: `LOS 5 VEHÍCULOS MÁS ${order === 'DESC' ? 'NUEVOS' : 'ANTIGUOS'}`,
+      table: {
+        header: {
+          headers: ['PLACA', 'MARCA', 'MODELO', 'CANTIDAD DE VISITAS'],
+          widths: ['auto', '*', 'auto', 'auto'],
+        },
+        content: result.map((item) => [
+          { text: item.placa, alignment: 'left' },
+          { text: item.marca, alignment: 'left' },
+          { text: item.modelo, alignment: 'left' },
+          { text: item.vistas, alignment: 'right' },
+        ]),
+      },
+    };
     const docDefinition = generalReport(content);
     return this.printer.createPdf(docDefinition);
   }

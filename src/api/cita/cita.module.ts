@@ -9,6 +9,6 @@ import { VehiculoModule } from '../vehiculo/vehiculo.module';
   controllers: [CitaController],
   providers: [CitaService],
   imports: [TypeOrmModule.forFeature([Cita]), VehiculoModule],
+  exports: [CitaService],
 })
-export class CitaModule {
-}
+export class CitaModule {}

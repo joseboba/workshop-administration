@@ -63,4 +63,58 @@ export class ReportsController {
     pdfDoc.pipe(response);
     pdfDoc.end();
   }
+
+  @Get('mecanicosConMaServicios')
+  async getMecanicosConMasServicios(@Res() response: Response) {
+    const pdfDoc = await this.reportsService.getMecanicosConMasServicios();
+
+    pdfDoc.info.Title = 'Mecanicos con más servicios';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  @Get('serviciosPrestadosMasCaros')
+  async getServiciosPrestadosMasCaros(@Res() response: Response) {
+    const pdfDoc =
+      await this.reportsService.getServiciosPrestadosMasMenosCaros('DESC');
+
+    pdfDoc.info.Title = 'Servicios prestados mas caros';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  @Get('serviciosPrestadosMenosCaros')
+  async getServiciosPrestadosMenosCaros(@Res() response: Response) {
+    const pdfDoc =
+      await this.reportsService.getServiciosPrestadosMasMenosCaros('ASC');
+
+    pdfDoc.info.Title = 'Servicios prestados menos caros';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  @Get('vehiculosMasNuevosReparados')
+  async getVehiculosMasNuevosReparados(@Res() response: Response) {
+    const pdfDoc =
+      await this.reportsService.getVehiculosMasMenosNuevosReparados('DESC');
+
+    pdfDoc.info.Title = 'Vehiculos mas nuevos reparados';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
+
+  @Get('vehiculosMenosNuevosReparados')
+  async getVehiculosMenosNuevosReparados(@Res() response: Response) {
+    const pdfDoc =
+      await this.reportsService.getVehiculosMasMenosNuevosReparados('ASC');
+
+    pdfDoc.info.Title = 'Vehiculos mas antiguos reparados';
+    response.setHeader('Content-Type', 'application/pdf');
+    pdfDoc.pipe(response);
+    pdfDoc.end();
+  }
 }
