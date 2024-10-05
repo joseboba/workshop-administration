@@ -101,6 +101,18 @@ export class PaymentService {
         .getRawOne<{ total: number }>()
     ).total;
 
+    await this.mailerService.sendMail({
+      to: ordenTrabajo.vehiculo.cliente.cliCorreo,
+      subject: 'Pago aplicado',
+      html: `<body>
+       <h1>¡Pago aplicado!</h1>
+       <hr>
+       <p>Se ha aplicado la suma de: <b>${Format.formatCurrency(applyPaymentDto.pagTotal)}</b></p>
+       <br>
+       <p>Si quieres más información, puedes consultar en el portal</p>
+    </body>`,
+    });
+
     if (sumTotals === totalOrder) {
       await this.ordenTrabajoService.actualizarEstadoOrdenTrabajo(
         applyPaymentDto.ortCodigo,
@@ -113,18 +125,6 @@ export class PaymentService {
       applyPaymentDto.ortCodigo,
       'PG_PROCESO',
     );
-
-    await this.mailerService.sendMail({
-      to: ordenTrabajo.vehiculo.cliente.cliCorreo,
-      subject: 'Pago aplicado',
-      html: `<body>
-       <h1>¡Pago aplicado!</h1>
-       <hr>
-       <p>Se ha aplicado la suma de: <b>${Format.formatCurrency(applyPaymentDto.pagTotal)}</b></p>
-       <br>
-       <p>Si quieres más información, puedes consultar en el portal</p>
-    </body>`,
-    });
   }
 
   async historyPayment(ortCodigo: number): Promise<Pago[]> {

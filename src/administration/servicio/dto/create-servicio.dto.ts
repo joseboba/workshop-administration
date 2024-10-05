@@ -30,7 +30,7 @@ export class CreateServicioDto {
   @MinLength(1, {
     message: 'El nombre debe ser de al menos 1 cáracter',
   })
-  @MaxLength(50, {
+  @MaxLength(200, {
     message: 'El nombre debe ser de máximo 50 cáracteres',
   })
   srvDescripcion: string;
