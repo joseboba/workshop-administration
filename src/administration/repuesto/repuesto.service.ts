@@ -13,6 +13,7 @@ import {
   Format,
   transformToAscOrDesc,
 } from '../../util';
+import { RepuestosMasMenosCarosDto } from '../../data/reports/filters/repuestos-mas-menos-caros.dto';
 
 @Injectable()
 export class RepuestoService {
@@ -153,7 +154,10 @@ export class RepuestoService {
     await this.repuestoRepository.remove(repuesto);
   }
 
-  async repuestosMasMenosCaros(order: 'ASC' | 'DESC'): Promise<
+  async repuestosMasMenosCaros(
+    filters: RepuestosMasMenosCarosDto,
+    order: 'ASC' | 'DESC',
+  ): Promise<
     {
       codigo: number;
       nombreProveedor: string;
@@ -170,6 +174,13 @@ export class RepuestoService {
       .addSelect('r.rep_cantidad_disponible', 'cantidad')
       .addSelect('r.rep_precio', 'precio')
       .addSelect('p.prv_nombre', 'nombreProveedor')
+      .where(
+        `
+        (:proveedor = 0 or p.prv_codigo = :proveedor) and
+        (:tipoRepuesto = 0 or r.trp_codigo = :tipoRepuesto)
+      `,
+        { proveedor: filters.proveedor, tipoRepuesto: filters.tipoRepuesto },
+      )
       .orderBy('precio', order)
       .limit(10)
       .getRawMany<{

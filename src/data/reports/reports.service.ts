@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { GeneralReport, generalReport } from './documents/general_report';
 import { PrinterService } from '../../administration/printer/printer.service';
 import { ServicioService } from '../../administration/servicio/servicio.service';
 import { RepuestoService } from '../../administration/repuesto/repuesto.service';
 import { CitaService } from '../../administration/cita/cita.service';
 import { citaReport, GeneralReportCitas } from './documents/cita_report';
+import { RepuestosMasMenosCarosDto } from './filters/repuestos-mas-menos-caros.dto';
+import { MarcasMasAtendidasDto } from './filters/marcas-mas-atendidas.dto';
+import { ClientesMasRecurrentesDto } from './filters/clientes-mas-recurrentes.dto';
 
 @Injectable()
 export class ReportsService {
@@ -69,15 +72,33 @@ export class ReportsService {
     };
   }
 
-  async getServiciosMasSolicitados(): Promise<PDFKit.PDFDocument> {
-    const result = await this.servicio.serviciosMasMenosSolicitados('DESC');
+  async getServiciosMasSolicitados(
+    start: Date,
+    end: Date,
+    tipoServicio = 0,
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.serviciosMasMenosSolicitados(
+      start,
+      end,
+      tipoServicio,
+      'DESC',
+    );
     const content = this.getServiciosMasMenosSolicitadosContent(result, 'MÁS');
     const docDefinition = generalReport(content);
     return this.printer.createPdf(docDefinition);
   }
 
-  async getServiciosMenosSolicitados(): Promise<PDFKit.PDFDocument> {
-    const result = await this.servicio.serviciosMasMenosSolicitados('ASC');
+  async getServiciosMenosSolicitados(
+    start: Date,
+    end: Date,
+    tipoServicio = 0,
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.serviciosMasMenosSolicitados(
+      start,
+      end,
+      tipoServicio,
+      'ASC',
+    );
     const content = this.getServiciosMasMenosSolicitadosContent(
       result,
       'MENOS',
@@ -86,22 +107,28 @@ export class ReportsService {
     return this.printer.createPdf(docDefinition);
   }
 
-  async getRepuestoMasCaros(): Promise<PDFKit.PDFDocument> {
-    const result = await this.repuesto.repuestosMasMenosCaros('DESC');
+  async getRepuestoMasCaros(
+    filters: RepuestosMasMenosCarosDto,
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.repuesto.repuestosMasMenosCaros(filters, 'DESC');
     const content = this.getRepuestoMasMenosCaros(result, 'MÁS');
     const docDefinition = generalReport(content);
     return this.printer.createPdf(docDefinition);
   }
 
-  async getRepuestoMenosCaros(): Promise<PDFKit.PDFDocument> {
-    const result = await this.repuesto.repuestosMasMenosCaros('ASC');
+  async getRepuestoMenosCaros(
+    filters: RepuestosMasMenosCarosDto,
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.repuesto.repuestosMasMenosCaros(filters, 'ASC');
     const content = this.getRepuestoMasMenosCaros(result, 'MENOS');
     const docDefinition = generalReport(content);
     return this.printer.createPdf(docDefinition);
   }
 
-  async getMarcasMasAtendidas(): Promise<PDFKit.PDFDocument> {
-    const result = await this.servicio.marcasDeCarrosMasAtendidas();
+  async getMarcasMasAtendidas(
+    filters: MarcasMasAtendidasDto
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.marcasDeCarrosMasAtendidas(filters);
     const content: GeneralReport = {
       title: `LAS 10 MARCAS DE CARRO MÁS ATENDIDAS`,
       table: {
@@ -121,8 +148,10 @@ export class ReportsService {
     return this.printer.createPdf(docDefinition);
   }
 
-  async getClientesMasRecurrentes(): Promise<PDFKit.PDFDocument> {
-    const result = await this.servicio.getClientesMasRecurrentes();
+  async getClientesMasRecurrentes(
+    filters: ClientesMasRecurrentesDto,
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.getClientesMasRecurrentes(filters);
     const content: GeneralReport = {
       title: `LAS 10 CLIENTES MÁS RECURRENTES`,
       table: {

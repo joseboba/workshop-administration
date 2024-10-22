@@ -1,7 +1,11 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Query, Res } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
+import { ServiciosMasMenosSolicitadosDto } from './filters/servicios-mas-menos-solicitados.dto';
+import { RepuestosMasMenosCarosDto } from './filters/repuestos-mas-menos-caros.dto';
+import { MarcasMasAtendidasDto } from './filters/marcas-mas-atendidas.dto';
+import { ClientesMasRecurrentesDto } from './filters/clientes-mas-recurrentes.dto';
 
 @Controller('reports')
 @ApiTags('Reportes')
@@ -9,8 +13,15 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Get('serviciosMasSolicitados')
-  async getServiciosMasSolicitados(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.getServiciosMasSolicitados();
+  async getServiciosMasSolicitados(
+    @Query() filters: ServiciosMasMenosSolicitadosDto,
+    @Res() response: Response,
+  ) {
+    const pdfDoc = await this.reportsService.getServiciosMasSolicitados(
+      filters.startDate,
+      filters.endDate,
+      filters.tipoServicio,
+    );
 
     pdfDoc.info.Title = 'Servicios mas solicitados';
     response.setHeader('Content-Type', 'application/pdf');
@@ -18,8 +29,15 @@ export class ReportsController {
     pdfDoc.end();
   }
   @Get('serviciosMenosSolicitados')
-  async getServiciosMenosSolicitados(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.getServiciosMenosSolicitados();
+  async getServiciosMenosSolicitados(
+    @Query() filters: ServiciosMasMenosSolicitadosDto,
+    @Res() response: Response,
+  ) {
+    const pdfDoc = await this.reportsService.getServiciosMenosSolicitados(
+      filters.startDate,
+      filters.endDate,
+      filters.tipoServicio,
+    );
 
     pdfDoc.info.Title = 'Servicios menos solicitados';
     response.setHeader('Content-Type', 'application/pdf');
@@ -28,8 +46,11 @@ export class ReportsController {
   }
 
   @Get('repuestosMasCaros')
-  async getRepuestosMasCaros(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.getRepuestoMasCaros();
+  async getRepuestosMasCaros(
+    @Query() filters: RepuestosMasMenosCarosDto,
+    @Res() response: Response,
+  ) {
+    const pdfDoc = await this.reportsService.getRepuestoMasCaros(filters);
 
     pdfDoc.info.Title = 'Repuestos mas caros';
     response.setHeader('Content-Type', 'application/pdf');
@@ -37,8 +58,11 @@ export class ReportsController {
     pdfDoc.end();
   }
   @Get('repuestosMenosCaros')
-  async getRepuestosMenosCaros(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.getRepuestoMenosCaros();
+  async getRepuestosMenosCaros(
+    @Query() filters: RepuestosMasMenosCarosDto,
+    @Res() response: Response,
+  ) {
+    const pdfDoc = await this.reportsService.getRepuestoMenosCaros(filters);
 
     pdfDoc.info.Title = 'Repuestos menos caros';
     response.setHeader('Content-Type', 'application/pdf');
@@ -47,8 +71,11 @@ export class ReportsController {
   }
 
   @Get('marcasMasAtendidas')
-  async getMarcasMasAtendidas(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.getMarcasMasAtendidas();
+  async getMarcasMasAtendidas(
+    @Query() filters: MarcasMasAtendidasDto,
+    @Res() response: Response,
+  ) {
+    const pdfDoc = await this.reportsService.getMarcasMasAtendidas(filters);
 
     pdfDoc.info.Title = 'Marcas mas atendidas';
     response.setHeader('Content-Type', 'application/pdf');
@@ -57,8 +84,11 @@ export class ReportsController {
   }
 
   @Get('clientesMasRecurrentes')
-  async getClientesMasRecurrentes(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.getClientesMasRecurrentes();
+  async getClientesMasRecurrentes(
+    @Query() filters: ClientesMasRecurrentesDto,
+    @Res() response: Response,
+  ) {
+    const pdfDoc = await this.reportsService.getClientesMasRecurrentes(filters);
 
     pdfDoc.info.Title = 'Clientes mas recurrentes';
     response.setHeader('Content-Type', 'application/pdf');

@@ -17,6 +17,7 @@ export class TypeOrmExceptionInterceptor implements NestInterceptor {
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
       catchError((err) => {
+        console.log(err);
         switch (err.code) {
           case '23503':
             return throwError(

@@ -1,13 +1,14 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors();
-  app.setGlobalPrefix('workshop-administration');
+  app.setGlobalPrefix('/api/workshop-administration');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: false,
@@ -22,8 +23,11 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('workshop-administration', app, document);
-  await app.listen(3001);
+  SwaggerModule.setup('/api/workshop-administration', app, document);
+
+  const configService = app.get(ConfigService);
+  const port = configService.get('SERVER_PORT') || 3001;
+  await app.listen(port);
 }
 
 bootstrap();

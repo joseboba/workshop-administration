@@ -45,6 +45,7 @@ import { PaymentModule } from './operation/payment/payment.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',

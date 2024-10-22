@@ -11,6 +11,9 @@ import { TipoServicioService } from '../tipo_servicio/tipo_servicio.service';
 import { PaginationResponseDto } from '../../commons';
 import { camelToSnakeCase, Format, transformToAscOrDesc } from '../../util';
 import { ServicioOrdenTrabajo } from '../servicio_orden_trabajo/entities/servicio_orden_trabajo.entity';
+import { RepuestosMasMenosCarosDto } from '../../data/reports/filters/repuestos-mas-menos-caros.dto';
+import { MarcasMasAtendidasDto } from '../../data/reports/filters/marcas-mas-atendidas.dto';
+import { ClientesMasRecurrentesDto } from '../../data/reports/filters/clientes-mas-recurrentes.dto';
 
 @Injectable()
 export class ServicioService {
@@ -154,7 +157,12 @@ export class ServicioService {
     await this.servicioRepository.remove(servicio);
   }
 
-  async serviciosMasMenosSolicitados(order: 'ASC' | 'DESC'): Promise<
+  async serviciosMasMenosSolicitados(
+    start: Date,
+    end: Date,
+    tipoServicio: number,
+    order: 'ASC' | 'DESC',
+  ): Promise<
     {
       codigo: number;
       nombre: string;
@@ -171,6 +179,13 @@ export class ServicioService {
       .addSelect('count(tsot)', 'solicitudes')
       .groupBy('s.srv_codigo, s.srv_nombre, s.srv_costo')
       .orderBy('solicitudes', order)
+      .where(
+        `
+        (:tsrCodigo = 0 or s.tsr_codigo = :tsrCodigo) and
+        tsot.sor_fecha_servicio between :start and :end
+      `,
+        { start, end, tsrCodigo: tipoServicio },
+      )
       .limit(10)
       .getRawMany<{
         codigo: number;
@@ -187,7 +202,7 @@ export class ServicioService {
     }));
   }
 
-  async marcasDeCarrosMasAtendidas(): Promise<
+  async marcasDeCarrosMasAtendidas(filters: MarcasMasAtendidasDto): Promise<
     {
       nombre: string;
       cantidad: string;
@@ -206,6 +221,19 @@ export class ServicioService {
         `((select count(*) from taller_automotriz.taa_servicio_orden_trabajo) / COUNT(tsot)) * 100`,
         'porcentaje',
       )
+      .where(
+        `
+          (:tipoVehiculo = 0 or tv.tve_codigo = :tipoVehiculo) and
+          (:marca = 0 or tmv.mve_codigo = :marca) and
+          tsot.sor_fecha_servicio between :start and :end
+      `,
+        {
+          start: filters.startDate,
+          end: filters.endDate,
+          marca: filters.marca,
+          tipoVehiculo: filters.tipoVehiculo,
+        },
+      )
       .groupBy('tmv.mve_nombre')
       .limit(10)
       .getRawMany<{
@@ -221,7 +249,7 @@ export class ServicioService {
     }));
   }
 
-  async getClientesMasRecurrentes(): Promise<
+  async getClientesMasRecurrentes(filters: ClientesMasRecurrentesDto): Promise<
     {
       cliente: string;
       vehiculo: string;
@@ -239,6 +267,21 @@ export class ServicioService {
       .addSelect('tv.veh_placa', 'vehiculo')
       .addSelect('tv.veh_modelo', 'modelo')
       .addSelect('count(tsot)', 'visitas')
+      .where(
+        `
+            (:marca = 0 or tv.mve_codigo = :marca) and
+            (:tipoVehiculo = 0 or tv.tve_codigo = :tipoVehiculo) and
+            (:placa = '' or tv.veh_placa ilike :placa) and
+            tsot.sor_fecha_servicio between :start and :end
+      `,
+        {
+          marca: filters.marca,
+          tipoVehiculo: filters.tipoVehiculo,
+          placa: `%${filters.placa}%`,
+          start: filters.startDate,
+          end: filters.endDate,
+        },
+      )
       .groupBy('cli.cli_apellidos, cli.cli_nombres, tv.veh_placa')
       .limit(10)
       .getRawMany<{
@@ -376,5 +419,4 @@ export class ServicioService {
       vistas: +vistas,
     }));
   }
-
 }
