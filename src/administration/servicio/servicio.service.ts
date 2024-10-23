@@ -14,6 +14,9 @@ import { ServicioOrdenTrabajo } from '../servicio_orden_trabajo/entities/servici
 import { RepuestosMasMenosCarosDto } from '../../data/reports/filters/repuestos-mas-menos-caros.dto';
 import { MarcasMasAtendidasDto } from '../../data/reports/filters/marcas-mas-atendidas.dto';
 import { ClientesMasRecurrentesDto } from '../../data/reports/filters/clientes-mas-recurrentes.dto';
+import { MecanicosMasServiciosDto } from '../../data/reports/filters/mecanicos-mas-servicios.dto';
+import { ServiciosMasMenosCarosDto } from '../../data/reports/filters/servicios-mas-menos-caros.dto';
+import { VehiculosMasNuevosAntiguosDto } from '../../data/reports/filters/vehiculos-mas-nuevos-antiguos.dto';
 
 @Injectable()
 export class ServicioService {
@@ -299,7 +302,7 @@ export class ServicioService {
     }));
   }
 
-  async getMecanicosConMasServicios(): Promise<
+  async getMecanicosConMasServicios(filters: MecanicosMasServiciosDto): Promise<
     {
       nombres: string;
       apellidos: string;
@@ -311,6 +314,8 @@ export class ServicioService {
     const primitiveValues = await this.servicioRepository
       .createQueryBuilder('s')
       .innerJoinAndSelect('s.serviciosOrdenTrabajo', 'tsot')
+      .innerJoinAndSelect('tsot.ordenTrabajo', 'tot')
+      .innerJoinAndSelect('tot.vehiculo', 'tv')
       .innerJoinAndSelect('tsot.mecanico', 'm')
       .innerJoinAndSelect('m.especialidadMecanica', 'em')
       .select('m.mec_nombres', 'nombres')
@@ -318,6 +323,21 @@ export class ServicioService {
       .addSelect('count(tsot)', 'servicios')
       .addSelect('m.mec_codigo', 'codigoEmpleado')
       .addSelect('em.eme_nombre', 'especialidadMecanica')
+      .where(
+        `
+            (:marca = 0 or tv.mve_codigo = :marca) and
+            (:tipoVehiculo = 0 or tv.tve_codigo = :tipoVehiculo) and
+            (:tipoServicio = 0 or s.tsr_codigo = :tipoServicio) and
+            tsot.sor_fecha_servicio between :start and :end
+      `,
+        {
+          marca: filters.marca,
+          tipoVehiculo: filters.tipoVehiculo,
+          tipoServicio: filters.tipoServicio,
+          start: filters.startDate,
+          end: filters.endDate,
+        },
+      )
       .groupBy('m.mec_nombres, m.mec_apellidos, m.mec_codigo, em.eme_nombre')
       .limit(10)
       .getRawMany<{
@@ -345,7 +365,10 @@ export class ServicioService {
     );
   }
 
-  async getServiciosPrestadosMasMenosCaros(order: 'ASC' | 'DESC'): Promise<
+  async getServiciosPrestadosMasMenosCaros(
+    filters: ServiciosMasMenosCarosDto,
+    order: 'ASC' | 'DESC',
+  ): Promise<
     {
       codigo: string;
       nombre: string;
@@ -362,6 +385,19 @@ export class ServicioService {
       .addSelect('s.srv_descripcion', 'descripcion')
       .addSelect('s.srv_costo', 'costo')
       .addSelect('count(tsot)', 'cantidadSolicitudes')
+      .where(
+        `
+            (:mecanico = 0 or tsot.mec_codigo = :mecanico) and
+            (:tipoServicio = 0 or s.tsr_codigo = :tipoServicio) and
+            tsot.sor_fecha_servicio between :start and :end
+      `,
+        {
+          mecanico: filters.mecanico,
+          tipoServicio: filters.tipoServicio,
+          start: filters.startDate,
+          end: filters.endDate,
+        },
+      )
       .groupBy('s.srv_codigo, s.srv_nombre, s.srv_descripcion, s.srv_costo')
       .orderBy('costo', order)
       .limit(5)
@@ -384,7 +420,10 @@ export class ServicioService {
     );
   }
 
-  async getVehiculosMasMenosNuevosReparados(order: 'ASC' | 'DESC'): Promise<
+  async getVehiculosMasMenosNuevosReparados(
+    filters: VehiculosMasNuevosAntiguosDto,
+    order: 'ASC' | 'DESC',
+  ): Promise<
     {
       placa: string;
       marca: string;
@@ -402,7 +441,22 @@ export class ServicioService {
       .addSelect('mv.mve_nombre', 'marca')
       .addSelect('v.veh_modelo', 'modelo')
       .addSelect('count(tsot.*)', 'vistas')
-      .limit(5)
+      .where(
+        `
+            (:placa = '' or v.placa ilike :placa) and
+            (:tipoVehiculo = 0 or v.tve_codigo = :tipoVehiculo) and
+            (:cliente = 0 or v.cli_codigo = :cliente) and
+            tsot.sor_fecha_servicio between :start and :end
+      `,
+        {
+          placa: `%${filters.placa}%`,
+          tipoVehiculo: filters.tipoVehiculo,
+          cliente: filters.cliente,
+          start: filters.startDate,
+          end: filters.endDate,
+        },
+      )
+      .limit(10)
       .groupBy('v.veh_placa, mv.mve_nombre, v.veh_modelo')
       .orderBy('v.veh_modelo', order)
       .getRawMany<{

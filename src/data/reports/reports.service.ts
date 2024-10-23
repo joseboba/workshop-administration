@@ -8,6 +8,9 @@ import { citaReport, GeneralReportCitas } from './documents/cita_report';
 import { RepuestosMasMenosCarosDto } from './filters/repuestos-mas-menos-caros.dto';
 import { MarcasMasAtendidasDto } from './filters/marcas-mas-atendidas.dto';
 import { ClientesMasRecurrentesDto } from './filters/clientes-mas-recurrentes.dto';
+import { MecanicosMasServiciosDto } from './filters/mecanicos-mas-servicios.dto';
+import { ServiciosMasMenosCarosDto } from './filters/servicios-mas-menos-caros.dto';
+import { VehiculosMasNuevosAntiguosDto } from './filters/vehiculos-mas-nuevos-antiguos.dto';
 
 @Injectable()
 export class ReportsService {
@@ -172,8 +175,10 @@ export class ReportsService {
     return this.printer.createPdf(docDefinition);
   }
 
-  async getMecanicosConMasServicios(): Promise<PDFKit.PDFDocument> {
-    const result = await this.servicio.getMecanicosConMasServicios();
+  async getMecanicosConMasServicios(
+    filters: MecanicosMasServiciosDto,
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.servicio.getMecanicosConMasServicios(filters);
     const content: GeneralReport = {
       title: 'LOS 10 MECÁNICOS CON MÁS SERVICIOS',
       table: {
@@ -201,10 +206,11 @@ export class ReportsService {
   }
 
   async getServiciosPrestadosMasMenosCaros(
+    filters: ServiciosMasMenosCarosDto,
     order: 'ASC' | 'DESC',
   ): Promise<PDFKit.PDFDocument> {
     const result =
-      await this.servicio.getServiciosPrestadosMasMenosCaros(order);
+      await this.servicio.getServiciosPrestadosMasMenosCaros(filters, order);
     const content: GeneralReport = {
       title: `LOS 5 SERVICIOS PRESTADOS MÁS ${order === 'DESC' ? 'CAROS' : 'BARATOS'}`,
       table: {
@@ -232,10 +238,11 @@ export class ReportsService {
   }
 
   async getVehiculosMasMenosNuevosReparados(
+    filters: VehiculosMasNuevosAntiguosDto,
     order: 'ASC' | 'DESC',
   ): Promise<PDFKit.PDFDocument> {
     const result =
-      await this.servicio.getVehiculosMasMenosNuevosReparados(order);
+      await this.servicio.getVehiculosMasMenosNuevosReparados(filters, order);
     const content: GeneralReport = {
       title: `LOS 5 VEHÍCULOS MÁS ${order === 'DESC' ? 'NUEVOS' : 'ANTIGUOS'}`,
       table: {
@@ -255,8 +262,10 @@ export class ReportsService {
     return this.printer.createPdf(docDefinition);
   }
 
-  async diasConMasMenosCitas(): Promise<PDFKit.PDFDocument> {
-    const result = await this.cita.getDiaDeLaSemanaConMasMenosCitas();
+  async diasConMasMenosCitas(
+    filters: VehiculosMasNuevosAntiguosDto,
+  ): Promise<PDFKit.PDFDocument> {
+    const result = await this.cita.getDiaDeLaSemanaConMasMenosCitas(filters);
     const content: GeneralReportCitas = {
       title: `DÍAS DE LA SEMANA CON MÁS Y MENOS CITAS`,
       table: {

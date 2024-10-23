@@ -6,6 +6,9 @@ import { ServiciosMasMenosSolicitadosDto } from './filters/servicios-mas-menos-s
 import { RepuestosMasMenosCarosDto } from './filters/repuestos-mas-menos-caros.dto';
 import { MarcasMasAtendidasDto } from './filters/marcas-mas-atendidas.dto';
 import { ClientesMasRecurrentesDto } from './filters/clientes-mas-recurrentes.dto';
+import { MecanicosMasServiciosDto } from './filters/mecanicos-mas-servicios.dto';
+import { ServiciosMasMenosCarosDto } from './filters/servicios-mas-menos-caros.dto';
+import { VehiculosMasNuevosAntiguosDto } from './filters/vehiculos-mas-nuevos-antiguos.dto';
 
 @Controller('reports')
 @ApiTags('Reportes')
@@ -97,8 +100,11 @@ export class ReportsController {
   }
 
   @Get('mecanicosConMaServicios')
-  async getMecanicosConMasServicios(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.getMecanicosConMasServicios();
+  async getMecanicosConMasServicios(
+    @Query() filters: MecanicosMasServiciosDto,
+    @Res() response: Response,
+  ) {
+    const pdfDoc = await this.reportsService.getMecanicosConMasServicios(filters);
 
     pdfDoc.info.Title = 'Mecanicos con más servicios';
     response.setHeader('Content-Type', 'application/pdf');
@@ -107,9 +113,12 @@ export class ReportsController {
   }
 
   @Get('serviciosPrestadosMasCaros')
-  async getServiciosPrestadosMasCaros(@Res() response: Response) {
+  async getServiciosPrestadosMasCaros(
+    @Query() filters: ServiciosMasMenosCarosDto,
+    @Res() response: Response
+  ) {
     const pdfDoc =
-      await this.reportsService.getServiciosPrestadosMasMenosCaros('DESC');
+      await this.reportsService.getServiciosPrestadosMasMenosCaros(filters, 'DESC');
 
     pdfDoc.info.Title = 'Servicios prestados mas caros';
     response.setHeader('Content-Type', 'application/pdf');
@@ -118,9 +127,12 @@ export class ReportsController {
   }
 
   @Get('serviciosPrestadosMenosCaros')
-  async getServiciosPrestadosMenosCaros(@Res() response: Response) {
+  async getServiciosPrestadosMenosCaros(
+    @Query() filters: ServiciosMasMenosCarosDto,
+    @Res() response: Response
+  ) {
     const pdfDoc =
-      await this.reportsService.getServiciosPrestadosMasMenosCaros('ASC');
+      await this.reportsService.getServiciosPrestadosMasMenosCaros(filters,'ASC');
 
     pdfDoc.info.Title = 'Servicios prestados menos caros';
     response.setHeader('Content-Type', 'application/pdf');
@@ -129,9 +141,12 @@ export class ReportsController {
   }
 
   @Get('vehiculosMasNuevosReparados')
-  async getVehiculosMasNuevosReparados(@Res() response: Response) {
+  async getVehiculosMasNuevosReparados(
+    @Query() filters: VehiculosMasNuevosAntiguosDto,
+    @Res() response: Response
+  ) {
     const pdfDoc =
-      await this.reportsService.getVehiculosMasMenosNuevosReparados('DESC');
+      await this.reportsService.getVehiculosMasMenosNuevosReparados(filters, 'DESC');
 
     pdfDoc.info.Title = 'Vehiculos mas nuevos reparados';
     response.setHeader('Content-Type', 'application/pdf');
@@ -140,9 +155,12 @@ export class ReportsController {
   }
 
   @Get('vehiculosMenosNuevosReparados')
-  async getVehiculosMenosNuevosReparados(@Res() response: Response) {
+  async getVehiculosMenosNuevosReparados(
+    @Query() filters: VehiculosMasNuevosAntiguosDto,
+    @Res() response: Response
+  ) {
     const pdfDoc =
-      await this.reportsService.getVehiculosMasMenosNuevosReparados('ASC');
+      await this.reportsService.getVehiculosMasMenosNuevosReparados(filters, 'ASC');
 
     pdfDoc.info.Title = 'Vehiculos mas antiguos reparados';
     response.setHeader('Content-Type', 'application/pdf');
@@ -151,8 +169,11 @@ export class ReportsController {
   }
 
   @Get('diasConMasMenosCitas')
-  async getDiasConMasMenosCitas(@Res() response: Response) {
-    const pdfDoc = await this.reportsService.diasConMasMenosCitas();
+  async getDiasConMasMenosCitas(
+    @Query() filters: VehiculosMasNuevosAntiguosDto,
+    @Res() response: Response
+  ) {
+    const pdfDoc = await this.reportsService.diasConMasMenosCitas(filters);
 
     pdfDoc.info.Title = 'Dias con más y menos citas';
     response.setHeader('Content-Type', 'application/pdf');

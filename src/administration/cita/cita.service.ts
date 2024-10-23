@@ -13,6 +13,7 @@ import {
   Format,
   transformToAscOrDesc,
 } from '../../util';
+import { VehiculosMasNuevosAntiguosDto } from '../../data/reports/filters/vehiculos-mas-nuevos-antiguos.dto';
 
 @Injectable()
 export class CitaService {
@@ -156,7 +157,9 @@ export class CitaService {
     await this.citaRepository.remove(cita);
   }
 
-  async getDiaDeLaSemanaConMasMenosCitas() {
+  async getDiaDeLaSemanaConMasMenosCitas(
+    filters: VehiculosMasNuevosAntiguosDto,
+  ) {
     const allDays = await this.citaRepository
       .createQueryBuilder()
       .select(
