@@ -20,6 +20,8 @@ export class ServicioRepuestoService {
   constructor(
     @InjectRepository(ServicioRepuesto)
     private readonly servicioRepuestoRepository: Repository<ServicioRepuesto>,
+    @InjectRepository(Repuesto)
+    private readonly repuestoRepository: Repository<Repuesto>,
     private readonly servicioService: ServicioService,
     private readonly repuestoService: RepuestoService,
     private readonly dataSource: DataSource,
@@ -123,14 +125,7 @@ export class ServicioRepuestoService {
   }
 
   async findByService(srvCodigo: number) {
-    const servicioRepuesto = await this.servicioRepuestoRepository.find({
-      relations: ['repuesto'],
-      where: { servicio: { srvCodigo } },
-    });
-
-    return servicioRepuesto.map((item) => ({
-      ...item.repuesto,
-    }));
+    return this.repuestoRepository.find();
   }
 
   async update(

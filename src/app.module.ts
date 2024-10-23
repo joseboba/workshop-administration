@@ -63,7 +63,7 @@ import { PaymentModule } from './operation/payment/payment.module';
         secure: true,
         auth: {
           user: 'jsalazarb4@miumg.edu.gt',
-          pass: 'fyqtzzwvvhbimnfz',
+          pass: 'tdor eswf oats mnyw',
         },
       },
     }),

@@ -5,12 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServicioRepuesto } from './entities/servicio_repuesto.entity';
 import { ServicioModule } from '../servicio/servicio.module';
 import { RepuestoModule } from '../repuesto/repuesto.module';
+import { Repuesto } from '../repuesto/entities/repuesto.entity';
 
 @Module({
   controllers: [ServicioRepuestoController],
   providers: [ServicioRepuestoService],
   imports: [
-    TypeOrmModule.forFeature([ServicioRepuesto]),
+    TypeOrmModule.forFeature([ServicioRepuesto, Repuesto]),
     ServicioModule,
     RepuestoModule,
   ],
