@@ -160,22 +160,39 @@ export class CitaService {
   async getDiaDeLaSemanaConMasMenosCitas(
     filters: VehiculosMasNuevosAntiguosDto,
   ) {
+    const where = `
+      (v.veh_placa ilike :placa) and
+      (v.cli_codigo = :cliente) and
+      (v.tve_codigo = :tipoVehiculo) and
+      cta_fecha_hora between :start and :end
+    `;
+
+    const params = {
+      place: `%${filters.placa}%`,
+      cliente: filters.cliente,
+      tipoVehiculo: filters.tipoVehiculo,
+      start: filters.startDate,
+      end: filters.endDate,
+    };
+
     const allDays = await this.citaRepository
-      .createQueryBuilder()
+      .createQueryBuilder('c')
+      .innerJoinAndSelect('c.vehiculo', 'v')
       .select(
         `
           CASE
-            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 1 THEN 'Lunes'
-            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 2 THEN 'Martes'
-            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 3 THEN 'Miércoles'
-            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 4 THEN 'Jueves'
-            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 5 THEN 'Viernes'
-            WHEN EXTRACT(DOW FROM cta_fecha_hora) = 6 THEN 'Sábado'
+            WHEN EXTRACT(DOW FROM c.cta_fecha_hora) = 1 THEN 'Lunes'
+            WHEN EXTRACT(DOW FROM c.cta_fecha_hora) = 2 THEN 'Martes'
+            WHEN EXTRACT(DOW FROM c.cta_fecha_hora) = 3 THEN 'Miércoles'
+            WHEN EXTRACT(DOW FROM c.cta_fecha_hora) = 4 THEN 'Jueves'
+            WHEN EXTRACT(DOW FROM c.cta_fecha_hora) = 5 THEN 'Viernes'
+            WHEN EXTRACT(DOW FROM c.cta_fecha_hora) = 6 THEN 'Sábado'
             ELSE 'Domingo'
           END as dia
       `,
       )
       .addSelect('count(*)', 'numeroCitas')
+      .where(where, params)
       .orderBy('dia', 'ASC')
       .groupBy('dia')
       .getRawMany<{
@@ -184,7 +201,8 @@ export class CitaService {
       }>();
 
     const citasQuery = await this.citaRepository
-      .createQueryBuilder()
+      .createQueryBuilder('c')
+      .innerJoinAndSelect('c.vehiculo', 'v')
       .select(
         `
             CASE
@@ -198,6 +216,7 @@ export class CitaService {
             END as dia
       `,
       )
+      .where(where, params)
       .addSelect('count(*)', 'numeroCitas')
       .limit(1)
       .groupBy('dia');
