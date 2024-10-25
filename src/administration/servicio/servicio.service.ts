@@ -221,7 +221,9 @@ export class ServicioService {
       .select('tmv.mve_nombre', 'nombre')
       .addSelect('count(tsot)', 'cantidad')
       .addSelect(
-        `((select count(*) from taller_automotriz.taa_servicio_orden_trabajo) / COUNT(tsot)) * 100`,
+        `(
+                       COUNT(tsot) * 100.0 / (select count(*) from taller_automotriz.taa_servicio_orden_trabajo)
+                  ) `,
         'porcentaje',
       )
       .where(
