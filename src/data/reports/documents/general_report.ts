@@ -1,17 +1,10 @@
 import {
-  Content,
   Size,
   StyleDictionary,
   TableCell,
   TDocumentDefinitions,
 } from 'pdfmake/interfaces';
 import { BadRequestException } from '@nestjs/common';
-
-const logo: Content = {
-  image: 'src/assets/LOGO.png',
-  width: 50,
-  alignment: 'left',
-};
 
 const styles: StyleDictionary = {
   h1: {
@@ -62,7 +55,6 @@ export const generalReport = ({
   return {
     pageSize: 'A4',
     content: [
-      logo,
       {
         text: title,
         alignment: 'center',
