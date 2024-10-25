@@ -222,8 +222,19 @@ export class ServicioService {
       .addSelect('count(tsot)', 'cantidad')
       .addSelect(
         `(
-                       COUNT(tsot) * 100.0 / (select count(*) from taller_automotriz.taa_servicio_orden_trabajo)
-                  ) `,
+      COUNT(tsot) * 100.0 /
+      (
+        SELECT COUNT(*)
+        FROM taller_automotriz.taa_servicio_orden_trabajo tsot2
+        INNER JOIN taller_automotriz.taa_orden_trabajo tot2 ON tsot2.ort_codigo = tot2.ort_codigo
+        INNER JOIN taller_automotriz.taa_vehiculo tv2 ON tot2.veh_placa = tv2.vhe_placa
+        INNER JOIN taller_automotriz.taa_marca_vehiculo tmv2 ON tv2.mve_codigo = tmv2.mve_codigo
+        WHERE 
+          (:tipoVehiculo = 0 OR tv2.tve_codigo = :tipoVehiculo) AND
+          (:marca = 0 OR tmv2.mve_codigo = :marca) AND
+          tsot2.sor_fecha_servicio BETWEEN :start AND :end
+      )
+    )`,
         'porcentaje',
       )
       .where(
