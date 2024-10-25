@@ -13,9 +13,11 @@ RUN yarn build
 
 FROM node:18-alpine as start
 WORKDIR /app
+COPY --from=builder /app/fonts ./dist/fonts
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env ./.env
 RUN cat .env
+RUN ls ./dist/fonts
 EXPOSE 4000
 CMD ["node", "/app/dist/main.js"]

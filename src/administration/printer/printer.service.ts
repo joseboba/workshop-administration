@@ -4,10 +4,14 @@ import { TDocumentDefinitions } from 'pdfmake/interfaces';
 
 const fonts = {
   Roboto: {
-    normal: 'fonts/Roboto-Regular.ttf',
-    bold: 'fonts/Roboto-Medium.ttf',
-    italics: 'fonts/Roboto-Italic.ttf',
-    bolditalics: 'fonts/Roboto-MediumItalic.ttf',
+    normal: './dist/fonts/Roboto-Regular.ttf',
+    bold: './dist/fonts/Roboto-Medium.ttf',
+    italics: './dist/fonts/Roboto-Italic.ttf',
+    bolditalics: './dist/fonts/Roboto-MediumItalic.ttf',
+    // normal: 'fonts/Roboto-Regular.ttf',
+    // bold: 'fonts/Roboto-Medium.ttf',
+    // italics: 'fonts/Roboto-Italic.ttf',
+    // bolditalics: 'fonts/Roboto-MediumItalic.ttf',
   },
 };
 

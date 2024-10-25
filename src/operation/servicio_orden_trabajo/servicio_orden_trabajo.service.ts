@@ -148,7 +148,6 @@ export class ServicioOrdenTrabajoService {
       throw new BadRequestException('La cantidad debe de ser mayor a 0');
     }
     const producto = await this.productoService.findOne(proCodigo);
-    await this.servicioProductoService.servicioProductoPorProducto(producto);
     if (producto.proCantidadDisponible < cantidad) {
       throw new BadRequestException(
         'El producto no tiene suficiente inventario',
@@ -204,7 +203,6 @@ export class ServicioOrdenTrabajoService {
     }
 
     const repuesto = await this.repuestoService.findOne(repCodigo);
-    await this.servicioRepuestoService.servicioPorRepuesto(repuesto);
     if (repuesto.repCantidadDisponible < cantidad) {
       throw new BadRequestException(
         'El repuesto no tiene suficiente inventario',

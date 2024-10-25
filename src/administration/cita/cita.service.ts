@@ -161,14 +161,14 @@ export class CitaService {
     filters: VehiculosMasNuevosAntiguosDto,
   ) {
     const where = `
-      (v.veh_placa ilike :placa) and
-      (v.cli_codigo = :cliente) and
-      (v.tve_codigo = :tipoVehiculo) and
+      (:placa = '' or v.veh_placa ilike :placa) and
+      (:cliente = 0 or v.cli_codigo = :cliente) and
+      (:tipoVehiculo = 0 or v.tve_codigo = :tipoVehiculo) and
       cta_fecha_hora between :start and :end
     `;
 
     const params = {
-      place: `%${filters.placa}%`,
+      placa: `%${filters.placa}%`,
       cliente: filters.cliente,
       tipoVehiculo: filters.tipoVehiculo,
       start: filters.startDate,

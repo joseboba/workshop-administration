@@ -287,6 +287,7 @@ export class ServicioService {
       )
       .groupBy('cli.cli_apellidos, cli.cli_nombres, tv.veh_placa')
       .limit(10)
+      .orderBy('count(tsot)', 'DESC')
       .getRawMany<{
         cliente: string;
         vehiculo: string;
@@ -443,7 +444,7 @@ export class ServicioService {
       .addSelect('count(tsot.*)', 'vistas')
       .where(
         `
-            (:placa = '' or v.placa ilike :placa) and
+            (:placa = '' or v.veh_placa ilike :placa) and
             (:tipoVehiculo = 0 or v.tve_codigo = :tipoVehiculo) and
             (:cliente = 0 or v.cli_codigo = :cliente) and
             tsot.sor_fecha_servicio between :start and :end
