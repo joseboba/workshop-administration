@@ -244,7 +244,7 @@ export class ReportsService {
     const result =
       await this.servicio.getVehiculosMasMenosNuevosReparados(filters, order);
     const content: GeneralReport = {
-      title: `LOS 5 VEHÍCULOS MÁS ${order === 'DESC' ? 'NUEVOS' : 'ANTIGUOS'}`,
+      title: `LOS 10 VEHÍCULOS MÁS ${order === 'DESC' ? 'NUEVOS' : 'ANTIGUOS'}`,
       table: {
         header: {
           headers: ['PLACA', 'MARCA', 'MODELO', 'CANTIDAD DE VISITAS'],

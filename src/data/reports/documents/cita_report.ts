@@ -67,7 +67,6 @@ export const citaReport = ({
   return {
     pageSize: 'A4',
     content: [
-      logo,
       {
         text: title,
         alignment: 'center',
@@ -105,6 +104,7 @@ export const citaReport = ({
               hour12: false,
               minute: 'numeric',
               second: 'numeric',
+              timeZone: 'America/Guatemala',
             })
               .format(new Date())
               .replace(',', ''),

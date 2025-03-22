@@ -92,6 +92,7 @@ export const generalReport = ({
               hour12: false,
               minute: 'numeric',
               second: 'numeric',
+              timeZone: 'America/Guatemala',
             })
               .format(new Date())
               .replace(',', ''),
